@@ -1,0 +1,4387 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A0B2E">
+<title>હરિવંદના કા રાજા</title>
+<meta name="description" content="હરિવંદના કા રાજા — ગણપતિ ઉત્સવ. ગેલેરી, પ્રશ્નોત્તરી, શુભકામનાઓ અને બાપ્પાનાં ૧૦૮ નામ.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Gujarati:wght@500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600&family=Fraunces:opsz,wght@9..144,300..700&display=swap">
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   TOKENS — a Patan Patola sari lit by diyas
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --night:    #1A0B2E;   /* deep aubergine-indigo — Bhadrapada night   */
+  --night-lo: #0E0619;   /* deeper, for vignette + water               */
+  --patola:   #6E0F2A;   /* madder maroon — depth planes, panel ground */
+  --marigold: #F5A11B;   /* galgota saffron — light, flame, focus      */
+  --kumkum:   #D01B3C;   /* sindoor crimson — accent, progress         */
+  --durva:    #1E7A5E;   /* banana-leaf green                          */
+  --varakh:   #D9A521;   /* gold foil — the title                      */
+  --silk:     #F2E4C9;   /* undyed ivory silk — body text              */
+  --silk-dim: #C9B695;
+
+  --serif: 'Noto Serif Gujarati', 'Shruti', 'Nirmala UI', Georgia, serif;
+  --sans:  'Noto Sans Gujarati', 'Shruti', 'Nirmala UI', system-ui, sans-serif;
+  --latin: 'Fraunces', Georgia, serif;
+
+  --ease-silk: cubic-bezier(.22,.61,.36,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html,body{
+  margin:0; padding:0;
+  height:100%;
+  background:var(--night-lo);
+  color:var(--silk);
+  font-family:var(--sans);
+  overflow:hidden;
+  overscroll-behavior:none;
+  -webkit-text-size-adjust:100%;
+}
+
+body{ text-rendering:optimizeLegibility; }
+
+/* The world. Everything 3D lives here. */
+#stage{
+  position:fixed; inset:0;
+  width:100%; height:100%;
+  display:block;
+  touch-action:none;      /* we own all gestures */
+  z-index:0;
+}
+
+/* Readable content floats above the world. Pointer-transparent by default so
+   drags reach the canvas; individual controls opt back in. */
+#overlay{
+  position:fixed; inset:0;
+  z-index:2;
+  pointer-events:none;
+  display:flex; flex-direction:column;
+  padding:calc(env(safe-area-inset-top) + 1.1rem) 1.1rem
+          calc(env(safe-area-inset-bottom) + 1.1rem);
+}
+
+/* ── The mandal's name. Not a header — a nameplate floating in the scene. ── */
+#nameplate{
+  text-align:center;
+  flex:0 0 auto;
+  opacity:0;
+  transform:translateY(-.5rem);
+  transition:opacity 1.1s var(--ease-silk), transform 1.1s var(--ease-silk);
+}
+#nameplate.lit{ opacity:1; transform:none; }
+
+#nameplate h1{
+  margin:0;
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:clamp(1.55rem, 7.2vw, 3.4rem);
+  line-height:1.28;
+  letter-spacing:.005em;
+  /* varakh — gold leaf catching diya light as it drifts */
+  background:linear-gradient(100deg,
+    #8A5E12 0%,  #D9A521 18%, #FFF0BC 33%, #F5A11B 46%,
+    #C08A18 62%, #FFE9A8 78%, #D9A521 92%, #8A5E12 100%);
+  background-size:280% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
+  animation:varakh 9s linear infinite;
+  filter:drop-shadow(0 2px 14px rgba(245,161,27,.30));
+}
+@keyframes varakh{
+  from{ background-position:  0% 50%; }
+  to  { background-position:280% 50%; }
+}
+
+#nameplate p{
+  margin:.42rem 0 0;
+  font-family:var(--latin);
+  font-weight:400;
+  font-size:clamp(.62rem, 2.5vw, .84rem);
+  letter-spacing:.24em;
+  color:var(--silk-dim);
+  opacity:.82;
+}
+
+/* Focus is always visible, in marigold. */
+:where(button,a,input,[tabindex]):focus-visible{
+  outline:2px solid var(--marigold);
+  outline-offset:3px;
+}
+
+button{ font:inherit; color:inherit; }
+
+/* ── Loading: one diya, before the world exists ── */
+#veil{
+  position:fixed; inset:0; z-index:30;
+  background:var(--night-lo);
+  display:grid; place-items:center;
+  transition:opacity .9s var(--ease-silk);
+}
+#veil.gone{ opacity:0; pointer-events:none; }
+#veil .wick{
+  width:7px; height:7px; border-radius:50%;
+  background:var(--marigold);
+  box-shadow:0 0 22px 7px rgba(245,161,27,.55), 0 0 60px 22px rgba(208,27,60,.20);
+  animation:wick 2.2s ease-in-out infinite;
+}
+@keyframes wick{
+  0%,100%{ transform:scale(1)   translateY(0);     opacity:.95; }
+  50%    { transform:scale(1.28) translateY(-2px); opacity:1; }
+}
+
+/* ── No WebGL: the same four destinations, in flat HTML ── */
+#noweb{
+  position:fixed; inset:0; z-index:50;
+  display:none;
+  overflow-y:auto;
+  padding:2rem 1.25rem 3rem;
+  background:
+    radial-gradient(120% 80% at 50% 0%, #2A1140 0%, var(--night) 45%, var(--night-lo) 100%);
+}
+#noweb.on{ display:block; }
+#noweb .inner{ max-width:34rem; margin:0 auto; }
+#noweb h1{
+  font-family:var(--serif); font-weight:700;
+  font-size:clamp(1.7rem,8vw,2.6rem); line-height:1.25;
+  color:var(--varakh); margin:0 0 .6rem;
+}
+#noweb > .inner > p{ color:var(--silk-dim); line-height:1.6; margin:0 0 2.4rem; }
+#noweb section{
+  margin:0 0 2.6rem;
+  padding-top:1.5rem;
+  border-top:1px solid rgba(217,165,33,.26);
+}
+#noweb section h2{
+  font-family:var(--serif); font-weight:700;
+  font-size:clamp(1.25rem,5.5vw,1.7rem);
+  color:var(--marigold); margin:0 0 .3rem;
+}
+#noweb section > p{ color:var(--silk-dim); line-height:1.6; margin:0 0 1rem; }
+
+/* ── The four destinations. Real buttons — but they stay objects lying in
+      the scene rather than a bar across it: gold line-art on a pool of
+      shade, no container, no border, no divider between them.
+
+      Two flanking columns in both orientations, the way lamps stand
+      either side of an idol — the centre line belongs to the lotus and
+      nothing is allowed to cross it. Landscape only pushes the columns
+      further apart into the width it has spare; a single low row there
+      put two of the four buttons directly on top of the flower. ── */
+#dock{
+  position:fixed;
+  left:0; right:0;
+  bottom:calc(env(safe-area-inset-bottom) + 9vh);
+  z-index:3;
+  display:grid;
+  grid-template-columns:auto auto;
+  /* The third term is a floor under the gap, not a preference: two 5.6rem
+     buttons plus a 42vw gap overflows a viewport narrower than about
+     340px, and the outer button slides off the screen edge. */
+  column-gap:min(42vw, 15rem, calc(100vw - 13.4rem));
+  row-gap:1vh;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  /* Same rule as the close button: unlit has to mean unreachable by
+     keyboard, not merely transparent. */
+  visibility:hidden;
+  transition:opacity 1s var(--ease-silk), visibility 0s linear 1s;
+}
+#dock.lit{
+  opacity:1; pointer-events:auto; visibility:visible;
+  transition:opacity 1s var(--ease-silk), visibility 0s linear 0s;
+}
+
+.dbtn{
+  -webkit-appearance:none; appearance:none;
+  position:relative;
+  display:flex; flex-direction:column; align-items:center;
+  gap:.15rem;
+  width:5.6rem;
+  padding:.5rem .2rem .45rem;
+  border:0; background:none;
+  color:var(--silk);
+  font-family:var(--serif); font-weight:600;
+  font-size:clamp(.78rem, 3.4vw, .96rem);
+  line-height:1.15;
+  text-align:center;
+  cursor:pointer;
+  transition:color .3s var(--ease-silk), transform .4s var(--ease-silk);
+}
+/* Ivory on lit water is unreadable, so a soft pool of shade does the work
+   a panel would do without becoming a panel. */
+.dbtn::before{
+  content:'';
+  position:absolute; inset:-.2rem -.4rem;
+  z-index:-1; border-radius:50%;
+  background:radial-gradient(52% 50% at 50% 44%,
+    rgba(14,6,25,.82) 0%, rgba(14,6,25,.46) 56%, rgba(14,6,25,0) 100%);
+}
+.dbtn svg{ display:block; width:2.6rem; height:2.6rem; overflow:visible; }
+.dbtn .ico-l{
+  fill:none; stroke:var(--varakh); stroke-width:1.5;
+  stroke-linecap:round; stroke-linejoin:round;
+  transition:stroke .3s var(--ease-silk);
+}
+.dbtn .ico-f{ fill:var(--varakh); opacity:.22; transition:opacity .3s, fill .3s; }
+.dbtn .ico-b{ fill:var(--varakh); opacity:.8; transition:fill .3s; }
+.dbtn small{
+  display:block;
+  font-family:var(--latin); font-weight:400;
+  font-size:.64em; color:var(--silk-dim); opacity:.6;
+}
+.dbtn:hover, .dbtn:focus-visible{ color:var(--marigold); transform:translateY(-.24rem); }
+.dbtn:hover .ico-l, .dbtn:focus-visible .ico-l{ stroke:var(--marigold); }
+.dbtn:hover .ico-f, .dbtn:focus-visible .ico-f{ fill:var(--marigold); opacity:.4; }
+.dbtn:hover .ico-b, .dbtn:focus-visible .ico-b{ fill:var(--marigold); }
+.dbtn:active{ transform:translateY(-.06rem) scale(.97); }
+.dbtn:focus-visible{ outline:none; }
+.dbtn:focus-visible::after{
+  content:'';
+  position:absolute; inset:.1rem -.1rem;
+  border:1px solid var(--marigold);
+  border-radius:1.6rem;
+  opacity:.8;
+}
+
+@media (min-aspect-ratio: 1/1){
+  #dock{
+    /* Same two columns, driven out to the flanks. A landscape frame is
+       all width and no height, so the space either side of the flower is
+       the only space there is — and putting the buttons there is what
+       lets the camera come close enough for the lotus to fill the frame. */
+    column-gap:min(56vw, 44rem, calc(100vw - 16.4rem));
+    row-gap:1.1rem;
+    bottom:calc(env(safe-area-inset-bottom) + 1.6rem);
+  }
+  .dbtn{ width:7rem; font-size:1.02rem; gap:.3rem; }
+  .dbtn svg{ width:3.2rem; height:3.2rem; }
+  .dbtn::before{ inset:-.35rem -.6rem; }
+}
+@media (prefers-reduced-motion: reduce){
+  .dbtn{ transition:color .2s; }
+  .dbtn:hover, .dbtn:focus-visible, .dbtn:active{ transform:none; }
+}
+
+/* ── Return. The only control that persists — a floating lotus, not a bar. ── */
+#back{
+  position:fixed;
+  left:50%; bottom:calc(env(safe-area-inset-bottom) + 1.15rem);
+  z-index:14;
+  transform:translateX(-50%) translateY(1.4rem) scale(.9);
+  width:3.4rem; height:3.4rem;
+  display:grid; place-items:center;
+  border:0; border-radius:50%;
+  background:rgba(14,6,25,.62);
+  backdrop-filter:blur(6px);
+  cursor:pointer;
+  opacity:0; pointer-events:none;
+  /* Hidden means hidden to the keyboard too. Fading it out with opacity
+     alone leaves an invisible button in the tab order, which is where a
+     keyboard user's focus silently disappears to. Visibility flips only
+     after the fade has been seen. */
+  visibility:hidden;
+  transition:opacity .4s var(--ease-silk), transform .4s var(--ease-silk),
+             visibility 0s linear .4s;
+}
+#back.on{
+  opacity:1; pointer-events:auto; visibility:visible;
+  transform:translateX(-50%) translateY(0) scale(1);
+  transition:opacity .4s var(--ease-silk), transform .4s var(--ease-silk),
+             visibility 0s linear 0s;
+}
+#back:hover{ transform:translateX(-50%) scale(1.07); }
+#back svg{ width:2.05rem; height:2.05rem; display:block; }
+
+/* ─────────────────────────────────────────────────────────────
+   PANELS — each section brings its own physical form, so they
+   never collapse into four identical cards. This is only the
+   shared shell: scrim, placement, scrolling, heading.
+   ───────────────────────────────────────────────────────────── */
+/* Visibility is deferred on close so the fade-out is actually seen,
+   rather than the content vanishing the instant the class drops. */
+#panel{
+  position:fixed; inset:0; z-index:12;
+  visibility:hidden; pointer-events:none;
+  transition:visibility 0s linear .55s;
+}
+#panel.open{ visibility:visible; transition-delay:0s; }
+
+#panel .scrim{
+  position:absolute; inset:0;
+  pointer-events:auto;
+  background:radial-gradient(125% 100% at 50% 38%,
+    rgba(26,11,46,.42) 0%, rgba(14,6,25,.88) 68%, rgba(14,6,25,.97) 100%);
+  opacity:0;
+  transition:opacity .55s var(--ease-silk);
+}
+#panel.open .scrim{ opacity:1; }
+
+#panel .sheet{
+  position:absolute;
+  pointer-events:auto;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  opacity:0;
+  transition:opacity .5s var(--ease-silk), transform .55s var(--ease-silk);
+}
+/* portrait: the sheet rises from below and the lotus dims behind it */
+#panel .sheet{
+  left:0; right:0;
+  bottom:0; top:16vh;
+  padding:1.5rem 1.15rem calc(env(safe-area-inset-bottom) + 5.6rem);
+  transform:translateY(4vh);
+}
+#panel.open .sheet{ opacity:1; transform:none; }
+
+/* landscape: the sheet takes the right, and the camera slides the
+   lotus left so he stays in view rather than being covered */
+@media (min-aspect-ratio: 1/1){
+  #panel .scrim{
+    background:linear-gradient(90deg,
+      rgba(14,6,25,0) 0%, rgba(14,6,25,.30) 38%, rgba(14,6,25,.90) 58%, rgba(14,6,25,.96) 100%);
+  }
+  #panel .sheet{
+    left:auto; right:0; top:0; bottom:0;
+    width:min(30rem, 48vw);
+    padding:2.2rem 2rem 2.6rem;
+    transform:translateX(2.5rem);
+  }
+  /* In portrait the sheet starts at 16vh and clears the nameplate. In
+     landscape it starts at the top edge, so the section's own title
+     lands straight on the mandal's name — 326×42px of it. The nameplate
+     belongs to the darshan, so it steps aside while you're reading,
+     exactly as the dock does, and comes back when you close. */
+  body.reading #nameplate{
+    opacity:0;
+    transform:translateY(-.5rem);
+    pointer-events:none;
+  }
+}
+
+.sheet-in{ max-width:34rem; margin:0 auto; }
+
+#panelTitle{
+  margin:0 0 .1rem;
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:clamp(1.4rem, 6vw, 2.1rem);
+  line-height:1.25;
+  color:var(--varakh);
+}
+#panelSub{
+  margin:0 0 1.5rem;
+  font-size:.9rem;
+  line-height:1.5;
+  color:var(--silk-dim);
+  max-width:32rem;
+}
+
+/* ── Shared text rhythm inside panels ── */
+.sheet p{ line-height:1.62; max-width:34rem; }
+.sheet a{ color:var(--marigold); }
+
+/* ═══ ૧૦૮ નામ ═══════════════════════════════════════════════════
+   A mala is counted one bead at a time under the thumb, and the
+   thread is the only progress bar it has ever needed. So the thread
+   is the interface: 108 beads you can scroll, tap or arrow through,
+   with the one under your thumb lit. No cards, no percentage.
+   ═══════════════════════════════════════════════════════════════ */
+.mala-head{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:1rem; margin:0 0 .85rem;
+}
+.mala-count{
+  font-family:var(--serif); font-weight:700;
+  font-size:1.7rem; line-height:1; color:var(--varakh);
+  font-variant-numeric:tabular-nums;
+}
+.mala-count i{
+  font-style:normal; font-weight:400;
+  font-size:.62em; color:var(--silk-dim); margin-inline-start:.15em;
+}
+
+/* the thread itself — beads strung on a hairline, scrolling sideways */
+.thread{
+  position:relative;
+  display:flex; align-items:center; gap:.30rem;
+  overflow-x:auto; overscroll-behavior-x:contain;
+  scrollbar-width:none;
+  padding:.9rem .25rem 1rem;
+  margin:0 -1.15rem 1.4rem;
+  padding-inline:1.15rem;
+  /* the string runs behind the beads and fades out at both ends, so it
+     reads as a loop continuing past the edge rather than a cut bar */
+  background:linear-gradient(90deg,
+    rgba(217,165,33,0) 0, rgba(217,165,33,.34) 8%,
+    rgba(217,165,33,.34) 92%, rgba(217,165,33,0) 100%) center/100% 1px no-repeat;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image:linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+.thread::-webkit-scrollbar{ display:none; }
+
+.bead{
+  position:relative;
+  flex:0 0 auto;
+  width:.62rem; height:.62rem;
+  border:1px solid rgba(242,228,201,.36);
+  border-radius:50%;
+  background:rgba(14,6,25,.6);
+  cursor:pointer;
+  transition:background .25s var(--ease-silk), border-color .25s var(--ease-silk),
+             width .3s var(--ease-silk), height .3s var(--ease-silk),
+             box-shadow .3s var(--ease-silk);
+}
+/* a real bead is small, and this one is a scrubber rather than the
+   primary control — so the dot stays bead-sized and the touch target
+   grows invisibly around it to something a thumb can actually hit */
+.bead::after{ content:''; position:absolute; inset:-.8rem -.18rem; }
+/* every 27th — a real mala is marked in quarters, and without them
+   108 identical dots give you no idea how far along you are */
+.bead.mark{ width:.82rem; height:.82rem; border-color:rgba(217,165,33,.6); }
+/* beads already told */
+.bead.told{ background:var(--kumkum); border-color:transparent; }
+/* the one under your thumb */
+.bead.now{
+  width:1.15rem; height:1.15rem;
+  background:var(--marigold); border-color:var(--varakh);
+  box-shadow:0 0 0 .22rem rgba(245,161,27,.18), 0 0 .9rem rgba(245,161,27,.55);
+}
+/* the guru bead, where a recitation begins and ends */
+.bead.guru{
+  width:1.25rem; height:1.25rem;
+  border-color:var(--varakh); border-width:2px;
+  background:radial-gradient(circle at 38% 34%, #F6D88A 0%, #9A6B14 100%);
+}
+
+/* the name, set as an inscription rather than a card */
+.face{
+  -webkit-appearance:none; appearance:none;
+  display:block; width:100%;
+  border:0; background:none; padding:.4rem 0 1.2rem;
+  color:inherit; text-align:center; cursor:pointer;
+  font:inherit;
+}
+.face .om{
+  display:block; font-family:var(--serif);
+  font-size:1.7rem; line-height:1; color:var(--varakh); opacity:.78;
+  margin:0 0 .55rem;
+}
+.face .nm{
+  display:block;
+  font-family:var(--serif); font-weight:700;
+  font-size:clamp(2rem, 10vw, 3.1rem);
+  line-height:1.22; color:var(--silk);
+  margin:0 0 .35rem;
+  text-shadow:0 0 2.2rem rgba(245,161,27,.24);
+}
+.face .rm{
+  display:block; font-family:var(--latin); font-weight:400;
+  font-size:.98rem; letter-spacing:.02em;
+  color:var(--marigold); opacity:.9; margin:0 0 .9rem;
+}
+.face .mn{
+  display:block; font-family:var(--sans);
+  font-size:1rem; line-height:1.6; color:var(--silk-dim);
+  max-width:26rem; margin:0 auto;
+}
+.face:focus-visible{ outline:2px solid var(--marigold); outline-offset:6px; border-radius:.5rem; }
+/* the name swaps with a small settle, the way a bead drops into place */
+.face.turn .nm, .face.turn .rm, .face.turn .mn{ animation:bead-turn .34s var(--ease-silk); }
+@keyframes bead-turn{ from{ opacity:0; transform:translateY(.42rem); } }
+
+.mala-nav{ display:flex; align-items:center; justify-content:center; gap:.9rem; }
+/* "આગળ" is pressed 108 times and "પાછળ" almost never, so only one of
+   them is given any weight. Two matching buttons would be a lie about
+   how this is actually used. */
+.turn-next{
+  -webkit-appearance:none; appearance:none;
+  flex:1 1 auto; max-width:15rem;
+  padding:.85rem 1.4rem;
+  border:1px solid var(--varakh); border-radius:2rem;
+  background:linear-gradient(180deg, rgba(245,161,27,.22), rgba(217,165,33,.09));
+  color:var(--silk);
+  font-family:var(--serif); font-weight:600; font-size:1.05rem;
+  cursor:pointer;
+  transition:background .3s var(--ease-silk), color .3s, transform .25s var(--ease-silk);
+}
+.turn-next:hover, .turn-next:focus-visible{
+  background:linear-gradient(180deg, rgba(245,161,27,.38), rgba(217,165,33,.16));
+  color:#fff;
+}
+.turn-next:active{ transform:scale(.975); }
+.quiet{
+  -webkit-appearance:none; appearance:none;
+  border:0; background:none; cursor:pointer;
+  padding:.85rem .55rem;
+  font-family:var(--sans); font-size:.92rem;
+  color:var(--silk-dim);
+  transition:color .25s var(--ease-silk), opacity .25s;
+}
+.quiet:hover, .quiet:focus-visible{ color:var(--marigold); }
+.quiet[disabled]{ opacity:.3; cursor:default; }
+.turn-next:focus-visible, .quiet:focus-visible{ outline:2px solid var(--marigold); outline-offset:3px; }
+
+/* the list, for reading rather than reciting */
+.mala-list{ list-style:none; margin:0; padding:0; }
+.mala-list li{
+  display:grid;
+  grid-template-columns:2.6rem 1fr;
+  gap:.2rem .8rem;
+  padding:.7rem 0;
+  border-top:1px solid rgba(242,228,201,.10);
+}
+.mala-list li:first-child{ border-top:0; }
+.mala-list .n{
+  grid-row:1 / span 2;
+  font-family:var(--serif); font-size:.95rem; color:var(--varakh);
+  opacity:.65; text-align:end; padding-top:.12rem;
+}
+.mala-list .g{ font-family:var(--serif); font-weight:600; font-size:1.15rem; color:var(--silk); }
+.mala-list .g em{
+  font-style:normal; font-family:var(--latin);
+  font-size:.78rem; color:var(--marigold); opacity:.85;
+  margin-inline-start:.55rem;
+}
+.mala-list .m{ font-family:var(--sans); font-size:.9rem; line-height:1.5; color:var(--silk-dim); }
+.mala-list li.told .n{ opacity:1; color:var(--kumkum); }
+
+/* reaching ૧૦૮ */
+.aarti-done{
+  margin:1.4rem 0 0; padding:1.3rem 1rem;
+  text-align:center;
+  border-top:1px solid rgba(217,165,33,.34);
+  background:radial-gradient(80% 120% at 50% 0%, rgba(245,161,27,.16), transparent 70%);
+}
+.aarti-done b{
+  display:block; font-family:var(--serif); font-weight:700;
+  font-size:1.45rem; color:var(--varakh); margin:0 0 .4rem;
+}
+.aarti-done span{ font-family:var(--sans); font-size:.95rem; color:var(--silk-dim); }
+
+.src-note{
+  margin:1.6rem 0 0; padding-top:.9rem;
+  border-top:1px solid rgba(242,228,201,.08);
+  font-family:var(--sans); font-size:.78rem; line-height:1.55;
+  color:var(--silk-dim); opacity:.62;
+}
+
+/* ═══ પ્રશ્નોત્તરી ═══════════════════════════════════════════════
+   Not a test — a thali of ten modaks, and you take one at a time.
+   Deliberately built from a different vocabulary than the mala: the
+   mala is a thread of small round things, this is a stack of wide
+   offered rows. Shared with the mala only where sharing is honest —
+   the bead, because a count of ten is still a count.
+
+   The two answer states carry one meaning each and never overlap:
+   varakh gold is always where the truth was, kumkum always marks
+   what your own hand chose. Green is not used. Correct and wrong
+   both light up — kumkum is auspicious, not a failing mark.
+   ═══════════════════════════════════════════════════════════════ */
+.q-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; margin:0 0 1.25rem;
+}
+
+/* ten beads, filling as you go — gold where you were right,
+   kumkum where you weren't, a marigold ring on the one at hand */
+.q-track{ display:flex; align-items:center; gap:.42rem; }
+.q-dot{
+  width:.6rem; height:.6rem; border-radius:50%;
+  border:1px solid rgba(242,228,201,.30);
+  background:transparent;
+  transition:background .3s var(--ease-silk), border-color .3s var(--ease-silk),
+             transform .3s var(--ease-silk);
+}
+.q-dot.right{ background:var(--varakh); border-color:transparent; }
+.q-dot.wrong{ background:var(--kumkum); border-color:transparent; }
+.q-dot.at{
+  transform:scale(1.5);
+  border-color:var(--marigold);
+  box-shadow:0 0 9px rgba(245,161,27,.5);
+}
+.q-of{
+  font-family:var(--serif); font-weight:700;
+  font-size:1.05rem; color:var(--silk-dim);
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+
+/* the question sits on a banana leaf — a torn organic edge, nothing
+   like the sheet's own rectangle, and no border-radius token shared
+   with anything else in the file.
+
+   The scrim behind the panel is deliberately open at the centre so
+   Bappa stays visible, which means every reading surface in here has
+   to carry its own opacity. Text over a translucent leaf over his
+   face is unreadable — so the leaf is nearly solid, and he shows in
+   the margins around it instead. */
+.q-leaf{
+  position:relative;
+  margin:0 0 1.15rem; padding:1.3rem 1.25rem 1.4rem;
+  border-radius:1.6rem .4rem 1.7rem .5rem;
+  background:
+    linear-gradient(158deg, rgba(30,122,94,.26) 0%, rgba(30,122,94,.12) 55%, rgba(110,15,42,.22) 100%),
+    rgba(16,7,29,.93);
+  box-shadow:inset 0 1px 0 rgba(242,228,201,.07);
+}
+/* the leaf's midrib */
+.q-leaf::before{
+  content:''; position:absolute; left:1.25rem; right:1.25rem; top:0;
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(30,122,94,.55) 22%, rgba(30,122,94,.55) 78%, transparent);
+}
+.q-leaf h3{
+  margin:0;
+  font-family:var(--serif); font-weight:600;
+  font-size:clamp(1.12rem, 4.6vw, 1.34rem);
+  line-height:1.5; color:var(--silk);
+}
+
+/* the offered answers */
+.q-opts{ display:grid; gap:.6rem; margin:0 0 1.1rem; }
+.q-opt{
+  position:relative;
+  display:flex; align-items:center; gap:.85rem;
+  width:100%; padding:.92rem 1.05rem;
+  text-align:start;
+  font-family:var(--sans); font-size:1.02rem; line-height:1.42;
+  color:var(--silk);
+  /* opaque for the same reason the leaf is: these sit over his face */
+  background:rgba(22,10,39,.90);
+  border:1px solid rgba(242,228,201,.16);
+  border-radius:.7rem;
+  cursor:pointer;
+  transition:background .22s var(--ease-silk), border-color .22s var(--ease-silk),
+             color .22s var(--ease-silk), transform .16s var(--ease-silk);
+}
+.q-opt:hover:not([disabled]){
+  background:rgba(58,28,16,.92);
+  border-color:rgba(245,161,27,.52);
+}
+.q-opt:active:not([disabled]){ transform:scale(.99); }
+
+/* the modak on each row: a little pleated dumpling, drawn rather than
+   clipped so the focus ring stays a clean rectangle around the row.
+   Kept to a silhouette plus two pleats — at 1.5rem, any more detail
+   collapses into a blob and it stops reading as a modak at all. */
+.q-opt .mk{
+  flex:0 0 auto; width:1.5rem; height:1.5rem;
+  opacity:.55;
+  transition:opacity .22s var(--ease-silk), transform .34s var(--ease-silk);
+}
+.q-opt .mk path{ fill:none; stroke:currentColor; stroke-width:1.5; stroke-linejoin:round; stroke-linecap:round; }
+.q-opt:hover:not([disabled]) .mk{ opacity:.95; }
+
+/* answered: gold is the truth, kumkum is your hand */
+.q-opt.is-right{
+  background:rgba(62,44,10,.94);
+  border-color:var(--varakh);
+  color:#FFF0BC;
+}
+.q-opt.is-right .mk{ opacity:1; }
+.q-opt.is-right .mk path{ fill:rgba(217,165,33,.42); }
+.q-opt.is-mine{
+  background:rgba(63,14,27,.94);
+  border-color:var(--kumkum);
+}
+.q-opt.is-mine .mk{ opacity:1; }
+.q-opt.is-mine .mk path{ fill:rgba(208,27,60,.40); }
+.q-opt[disabled]{ cursor:default; }
+/* the two that were never in it recede, but stay legible — they are
+   still part of the question you just read */
+.q-opt.is-dim{ background:rgba(18,8,32,.82); border-color:rgba(242,228,201,.08); color:var(--silk-dim); }
+.q-opt.is-dim .mk{ opacity:.28; }
+.q-opt.is-right .mk{ animation:modak-take .42s var(--ease-silk); }
+@keyframes modak-take{
+  0%  { transform:scale(1); }
+  45% { transform:scale(1.28) rotate(-7deg); }
+  100%{ transform:scale(1); }
+}
+
+/* why — the teaching line. An aside, not an error box: no icon, no
+   red panel, just a kumkum rule and the fact you were missing. */
+.q-why{
+  margin:0 0 1.15rem; padding:.7rem .9rem .7rem 1rem;
+  border-inline-start:2px solid var(--kumkum);
+  background:rgba(16,7,29,.88);
+  font-family:var(--sans); font-size:.95rem; line-height:1.6;
+  color:var(--silk-dim);
+}
+.q-why b{ color:var(--silk); font-weight:500; }
+
+/* The lotus glyph that returns you to the darshan is pinned low-centre
+   and floats above the panel, so the centre of the bottom edge is a
+   lane the panel's own controls must stay out of. The sheet's bottom
+   padding only clears that lane once you've scrolled to the end — and
+   this question is short enough to sit still — so the button hugs the
+   right at its own width instead of growing across the middle. */
+.q-nav{ display:flex; align-items:center; justify-content:flex-end; gap:.9rem; }
+.q-nav .turn-next{ flex:0 0 auto; }
+
+/* ── the score ── */
+.q-score{ text-align:center; padding:.5rem 0 0; }
+.q-score .tally{
+  font-family:var(--serif); font-weight:700;
+  font-size:clamp(3.2rem, 17vw, 4.6rem); line-height:1;
+  color:var(--varakh);
+  font-variant-numeric:tabular-nums;
+}
+.q-score .tally i{
+  font-style:normal; font-weight:400;
+  font-size:.34em; color:var(--silk-dim); margin-inline-start:.1em;
+}
+.q-score .bless{
+  margin:1rem auto 0; max-width:26rem;
+  font-family:var(--serif); font-weight:600;
+  font-size:1.22rem; line-height:1.55; color:var(--silk);
+}
+/* The score screen is short, so the scrim's open centre leaves Bappa
+   fully visible behind it — and a button parked on his face is not
+   something to ship. The blessing ends above him and the button drops
+   below, so he sits in the gap between them rather than under anything. */
+.q-score .again{ margin-top:min(34vh, 16rem); }
+
+/* ═══ શુભકામનાઓ ═════════════════════════════════════════════════
+   A third vocabulary, deliberately not the other two. The mala is a
+   thread of small round things; the quiz is a stack of wide offered
+   rows; this is one large object you strike, and one square card you
+   hand to somebody. So: a bell with a lot of air around it, the
+   blessing unrolling underneath as a scroll band — square corners and
+   gold rules, borrowing no radius from the leaf — and then a real
+   1080×1080 card, because a festival wish that can't go to WhatsApp
+   isn't finished.
+
+   The two halves are one gesture, not two tools: the blessing you were
+   just given is the blessing that goes on the card. You receive, then
+   you pass it on.
+   ═══════════════════════════════════════════════════════════════ */
+.w-bell{ text-align:center; padding:.4rem 0 0; }
+/* The bell is open line-art, and the scrim is deliberately open at the
+   centre — so without this, Bappa's face reads straight through the
+   bell's mouth. A pool of shade, the same device the dock glyphs sit
+   on, makes it one object hanging in front of the darshan rather than
+   a drawing laid over him. */
+.bell-btn{
+  -webkit-appearance:none; appearance:none;
+  border:0; padding:1.1rem 2.2rem .9rem; cursor:pointer;
+  display:inline-block; line-height:0;
+  border-radius:50% / 46%;
+  background:radial-gradient(58% 54% at 50% 46%,
+    rgba(14,6,25,.93) 0%, rgba(14,6,25,.80) 58%, rgba(14,6,25,0) 100%);
+  -webkit-tap-highlight-color:transparent;
+}
+.bell-btn:focus-visible{ outline:2px solid var(--marigold); outline-offset:4px; border-radius:.6rem; }
+.bell-svg{
+  width:clamp(7rem, 34vw, 9.5rem); height:auto;
+  transform-origin:50% 2%;
+  overflow:visible;
+}
+.bell-svg .br{ fill:none; stroke:var(--varakh); stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
+.bell-svg .cl{ fill:var(--marigold); stroke:none; }
+.bell-svg .bd{ fill:none; stroke:var(--marigold); stroke-width:1.8; opacity:.7; }
+/* the halo sits behind and only warms up while it rings */
+.bell-svg .ha{ fill:url(#bellGlow); opacity:0; transition:opacity .5s var(--ease-silk); }
+.bell-svg .wv{ fill:none; stroke:var(--marigold); stroke-width:2; stroke-linecap:round; opacity:0; }
+
+.bell-btn:hover .bell-svg .br{ stroke:#F2D98A; }
+.bell-btn.ring .bell-svg{ animation:ghanta 1.7s var(--ease-silk); }
+.bell-btn.ring .bell-svg .ha{ opacity:.9; }
+.bell-btn.ring .bell-svg .wv{ animation:wv 1.1s ease-out; }
+.bell-btn.ring .bell-svg .wv:nth-of-type(2){ animation-delay:.1s; }
+
+/* a damped pendulum — each swing shorter than the last, which is what
+   a struck bell actually does */
+@keyframes ghanta{
+  0%{   transform:rotate(0deg); }
+  11%{  transform:rotate(13deg); }
+  29%{  transform:rotate(-9.5deg); }
+  47%{  transform:rotate(6.2deg); }
+  65%{  transform:rotate(-3.8deg); }
+  82%{  transform:rotate(1.9deg); }
+  100%{ transform:rotate(0deg); }
+}
+@keyframes wv{
+  0%{   opacity:0; transform:scale(.82); }
+  22%{  opacity:.85; }
+  100%{ opacity:0; transform:scale(1.22); }
+}
+
+.w-hint{
+  /* the clapper and the sound arcs paint outside the svg's box, so the
+     hint needs more clearance than the measured height suggests */
+  margin:1.35rem 0 0; font-family:var(--sans); font-size:.9rem;
+  color:var(--silk-dim); opacity:.85;
+}
+
+/* ── the blessing, unrolled ── */
+.w-bless{
+  margin:1.5rem 0 0; padding:1.4rem 1.2rem;
+  border-block:1px solid rgba(217,165,33,.40);
+  border-radius:0;                    /* a scroll has no rounded corner */
+  background:
+    linear-gradient(180deg, rgba(110,15,42,.30), rgba(110,15,42,.13)),
+    rgba(16,7,29,.92);
+  text-align:center;
+  font-family:var(--serif); font-weight:600;
+  font-size:clamp(1.16rem, 4.6vw, 1.4rem); line-height:1.6;
+  color:var(--silk);
+  min-height:3.2rem;
+}
+.w-bless.empty{
+  font-family:var(--sans); font-weight:400; font-size:1rem;
+  color:var(--silk-dim); background:rgba(16,7,29,.78);
+  border-block-color:rgba(242,228,201,.12);
+}
+.w-bless.turn{ animation:unroll .62s var(--ease-silk); }
+@keyframes unroll{
+  from{ opacity:0; transform:scaleY(.72); filter:blur(1px); }
+  to{   opacity:1; transform:scaleY(1);   filter:blur(0); }
+}
+.w-again{ display:flex; justify-content:center; margin:.7rem 0 0; }
+
+/* ── passing it on ── */
+.w-send{ margin:2.1rem 0 0; }
+.w-send > h3{
+  margin:0 0 .2rem; font-family:var(--serif); font-weight:600;
+  font-size:1.12rem; color:var(--varakh);
+}
+.w-send > p{
+  margin:0 0 1.1rem; font-family:var(--sans); font-size:.92rem;
+  line-height:1.55; color:var(--silk-dim);
+}
+.w-field{ display:block; margin:0 0 1.3rem; }
+.w-field span{
+  display:block; margin:0 0 .4rem;
+  font-family:var(--sans); font-size:.88rem; color:var(--silk-dim);
+}
+/* an underline, not a box — the card below is the boxy thing, and two
+   competing rectangles would fight */
+.w-field input{
+  -webkit-appearance:none; appearance:none;
+  display:block; width:100%; box-sizing:border-box;
+  padding:.6rem .2rem; margin:0;
+  border:0; border-bottom:1px solid rgba(217,165,33,.5); border-radius:0;
+  background:rgba(16,7,29,.55);
+  font-family:var(--serif); font-weight:600; font-size:1.2rem;
+  color:var(--silk);
+  transition:border-color .25s var(--ease-silk), background .25s;
+}
+/* a placeholder set in the same serif at the same size reads as a name
+   already entered — so it steps down to the UI face and lightens */
+.w-field input::placeholder{
+  color:rgba(201,182,149,.42);
+  font-family:var(--sans); font-weight:400; font-size:.95rem;
+}
+.w-field input:focus{
+  outline:0; border-bottom-color:var(--marigold);
+  background:rgba(16,7,29,.8);
+}
+
+.w-card{
+  margin:0 0 1.1rem;
+  border:1px solid rgba(217,165,33,.3); border-radius:.5rem;
+  overflow:hidden; background:var(--night-lo);
+  box-shadow:0 14px 40px rgba(0,0,0,.45);
+}
+.w-card canvas{ display:block; width:100%; height:auto; }
+
+/* Same lane rule as the quiz: the lotus glyph that returns you to the
+   darshan is pinned low-centre above this panel. This content is tall
+   enough that you reach the sheet's bottom padding, but the row is kept
+   to the right anyway so the two can never meet mid-scroll. */
+.w-acts{ display:flex; align-items:center; justify-content:flex-end; gap:.6rem; flex-wrap:wrap; }
+.w-acts .turn-next{ flex:0 0 auto; }
+.w-note{
+  margin:.9rem 0 0; font-family:var(--sans); font-size:.84rem;
+  line-height:1.5; color:var(--silk-dim); opacity:.75;
+}
+
+/* ═══ ગેલેરી ════════════════════════════════════════════════════
+   A fourth vocabulary. The mala is a thread of beads, the quiz a
+   stack of offered rows, the wish one struck object and a card —
+   this is a wall of photographs, hung.
+
+   Two things decide the form. The photographs are the content, so
+   nothing is allowed to compete with them: no captions invented for
+   faces I cannot name, no hover captions, no frames heavy enough to
+   be looked at. And they are a record of five days in order, so the
+   only structure imposed on them is the day they were taken — the
+   one fact the photographs themselves carry.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* A day is announced the way a page of an album is: the date at the
+   left, and a thread of gold running out to the edge — the toran
+   strung across a lane, which is what a Ganpati day looks like. */
+.g-day{
+  display:flex; align-items:baseline; gap:.7rem;
+  margin:2.1rem 0 .85rem;
+}
+.g-day:first-child{ margin-top:.2rem; }
+.g-day h3{
+  margin:0; flex:0 0 auto;
+  font-family:var(--serif); font-weight:600;
+  font-size:clamp(1rem, 4vw, 1.15rem);
+  color:var(--varakh);
+  letter-spacing:.01em;
+}
+.g-day span{
+  flex:1 1 auto; height:1px;
+  background:linear-gradient(90deg,
+    rgba(217,165,33,.55), rgba(217,165,33,.16) 62%, rgba(217,165,33,0));
+}
+.g-day small{
+  flex:0 0 auto;
+  font-family:var(--sans); font-size:.76rem;
+  color:var(--silk-dim); opacity:.62;
+}
+
+/* Columns, not a grid. A grid of equal cells crops every photograph
+   to the same rectangle, which is exactly what a wall of festival
+   photos should not do — the portrait shot of the idol and the wide
+   shot of four hundred people in the lane are different shapes and
+   stay that way. */
+.g-wall{
+  column-count:2;
+  column-gap:.5rem;
+  margin:0 0 .3rem;
+}
+@media (min-width: 30rem){ .g-wall{ column-count:3; column-gap:.6rem; } }
+
+/* The one section that is given more of the screen than the others.
+   The rest are text and UI, which read better in a narrow measure —
+   but eighty photographs in a 30rem column come out at about 110px
+   each, which is a contact sheet, not a gallery. The lotus still has
+   the left of the frame; this only spends the empty width beside it. */
+@media (min-aspect-ratio: 1/1){
+  #panel .sheet.frame-gallery{ width:min(42rem, 58vw); }
+  #panel .sheet.frame-gallery .sheet-in{ max-width:42rem; }
+}
+
+.g-fr{
+  -webkit-appearance:none; appearance:none;
+  display:block; width:100%;
+  padding:0; margin:0 0 .5rem;
+  border:0; background:none;
+  /* a photograph is not a card — no radius, no shadow, just the print */
+  border-radius:0;
+  cursor:zoom-in;
+  /* the whole frame must not be split across a column break */
+  break-inside:avoid; -webkit-column-break-inside:avoid;
+  position:relative;
+  line-height:0;
+  transition:transform .35s var(--ease-silk);
+}
+@media (min-width: 30rem){ .g-fr{ margin-bottom:.6rem; } }
+
+.g-fr img{
+  display:block; width:100%; height:auto;
+  /* Reserved from the real pixel dimensions, so eighty lazy-loading
+     photographs do not reflow the wall under your thumb as they land. */
+  background:linear-gradient(135deg, rgba(110,15,42,.34), rgba(26,11,46,.6));
+  /* a thin brass edge, the way a print is mounted, not a UI border */
+  outline:1px solid rgba(217,165,33,.22);
+  outline-offset:-1px;
+  transition:outline-color .35s var(--ease-silk), filter .35s var(--ease-silk);
+}
+.g-fr:hover{ transform:translateY(-.2rem); }
+.g-fr:hover img, .g-fr:focus-visible img{
+  outline-color:var(--marigold);
+  filter:brightness(1.06);
+}
+.g-fr:focus-visible{ outline:none; }
+.g-fr:focus-visible img{ outline-width:2px; }
+
+/* A photograph that will not load leaves its frame standing with the
+   Patola weave showing through, rather than a broken-image glyph. */
+.g-fr.gone img{ visibility:hidden; }
+.g-fr.gone{
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(110,15,42,.5) 0 6px, rgba(30,122,94,.28) 6px 12px),
+    var(--night-lo);
+  outline:1px solid rgba(217,165,33,.22); outline-offset:-1px;
+  cursor:default;
+}
+
+.g-note{
+  margin:1.4rem 0 0; font-family:var(--sans); font-size:.84rem;
+  line-height:1.55; color:var(--silk-dim); opacity:.7;
+}
+
+/* ── The lightbox ──────────────────────────────────────────────
+   Above everything: the lotus glyph at 14, the panel at 12, and the
+   no-WebGL page at 50 — the gallery is reachable from that page too,
+   and at z-index 20 a photograph opened there rendered underneath
+   the wall you tapped it from. While a photograph is open it is the
+   only thing on screen, on either path. */
+#lens{
+  position:fixed; inset:0; z-index:60;
+  display:none;
+  /* Opaque, not a tinted veil. At 96% the bright photographs on the wall
+     behind still ghost through onto a near-black field and you read the
+     grid instead of the picture. */
+  background:#080310;
+  opacity:0;
+  transition:opacity .3s var(--ease-silk);
+}
+#lens.on{ display:block; }
+#lens.in{ opacity:1; }
+
+#lens .lens-fig{
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  padding:3.6rem .5rem 4.6rem;
+}
+#lens img{
+  display:block;
+  max-width:100%; max-height:100%;
+  width:auto; height:auto;
+  object-fit:contain;
+  opacity:0;
+  transition:opacity .3s var(--ease-silk);
+}
+#lens img.shown{ opacity:1; }
+
+/* the count, in Gujarati numerals — the one place a number belongs */
+#lens .lens-of{
+  position:absolute; top:0; left:0; right:0;
+  padding:1.05rem 1rem;
+  text-align:center;
+  font-family:var(--sans); font-size:.84rem;
+  color:var(--silk-dim);
+  pointer-events:none;
+}
+
+/* Round targets, because they sit over the photograph itself and a
+   rectangle would read as a second frame inside the first. */
+#lens button{
+  -webkit-appearance:none; appearance:none;
+  position:absolute;
+  width:3rem; height:3rem;
+  display:grid; place-items:center;
+  border:0; border-radius:50%;
+  background:rgba(14,6,25,.66);
+  backdrop-filter:blur(6px);
+  color:var(--varakh);
+  cursor:pointer;
+  transition:background .25s var(--ease-silk), color .25s var(--ease-silk),
+             transform .25s var(--ease-silk);
+  -webkit-tap-highlight-color:transparent;
+}
+#lens button:hover{ background:rgba(110,15,42,.76); color:var(--marigold); }
+#lens button:focus-visible{ outline:2px solid var(--marigold); outline-offset:2px; }
+#lens button:active{ transform:scale(.94); }
+#lens button svg{ width:1.5rem; height:1.5rem; display:block; fill:none;
+  stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+
+#lens .lens-x{ top:.6rem; right:.6rem; }
+/* Left and right sit at the bottom corners, not the vertical middle:
+   on a phone the middle of the screen edge is where your thumb is
+   already resting on the photograph, and centred arrows land on the
+   picture. In the corners they frame it instead. */
+#lens .lens-p{ bottom:.9rem; left:.9rem; }
+#lens .lens-n{ bottom:.9rem; right:.9rem; }
+#lens button[disabled]{ opacity:.3; pointer-events:none; }
+
+@media (min-width: 46rem){
+  #lens .lens-fig{ padding:4rem 5rem; }
+  #lens .lens-p{ top:50%; bottom:auto; left:1.2rem; transform:translateY(-50%); }
+  #lens .lens-n{ top:50%; bottom:auto; right:1.2rem; transform:translateY(-50%); }
+  #lens .lens-p:active, #lens .lens-n:active{ transform:translateY(-50%) scale(.94); }
+}
+
+
+  .turn-next:active{ transform:none; }
+  .thread{ scroll-behavior:auto; }
+  .q-opt:active:not([disabled]){ transform:none; }
+  .q-opt.is-right .mk{ animation:none; }
+  .q-dot{ transition:none; }
+  /* the bell still lights, it just doesn't swing */
+  .bell-btn.ring .bell-svg{ animation:none; }
+  .bell-btn.ring .bell-svg .wv{ animation:none; }
+  .w-bless.turn{ animation:none; }
+  .g-fr:hover{ transform:none; }
+  #lens, #lens img{ transition-duration:.12s; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  #nameplate h1{ animation:none; background-position:22% 50%; }
+  #veil .wick{ animation:none; }
+  #nameplate{ transition-duration:.25s; }
+  #panel .sheet, #panel .scrim, #back, .nlab{ transition-duration:.12s; }
+  #panel .sheet{ transform:none; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<div id="overlay">
+  <div id="nameplate">
+    <h1>હરિવંદના કા રાજા</h1>
+    <p lang="en">Harivandana Ka Raja</p>
+  </div>
+</div>
+
+<nav id="dock" aria-label="વિભાગ"></nav>
+
+<div id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle">
+  <div class="scrim" data-close="1"></div>
+  <div class="sheet">
+    <div class="sheet-in">
+      <h2 id="panelTitle"></h2>
+      <p id="panelSub"></p>
+      <div id="panelBody"></div>
+    </div>
+  </div>
+</div>
+
+<button id="back" type="button" aria-label="દર્શન પર પાછા જાઓ" title="પાછા">
+  <svg viewBox="0 0 48 48" aria-hidden="true">
+    <g fill="none" stroke="#D9A521" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 10c4 5 4 12 0 17-4-5-4-12 0-17z"/>
+      <path d="M24 27c-4-4-10-5-15-3 3 5 9 8 15 7 6 1 12-2 15-7-5-2-11-1-15 3z"/>
+      <path d="M14 14c5 2 8 7 9 13M34 14c-5 2-8 7-9 13"/>
+    </g>
+  </svg>
+</button>
+
+<div id="veil"><div class="wick" role="img" aria-label="દીવો પ્રગટે છે"></div></div>
+
+<!-- One photograph, filling the screen. Built empty; the gallery fills it. -->
+<div id="lens" role="dialog" aria-modal="true" aria-label="ફોટો"></div>
+
+<div id="noweb">
+  <div class="inner">
+    <h1>હરિવંદના કા રાજા</h1>
+    <p>આ ઉપકરણ પર 3D દૃશ્ય ચાલી શકતું નથી, પણ બધું જ અહીં વાંચી શકાશે.</p>
+    <div id="nowebBody"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   હરિવંદના કા રાજા — a single-file 3D Ganpati Utsav scene.
+   Three.js is pinned to 0.149 on purpose: it is the last release shipping a
+   classic (non-module) build, and classic scripts are never CORS-checked —
+   so this file works double-clicked from a desktop, with no server.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+'use strict';
+
+/* ───────────────────────────────────────────────────────────────
+   1. YOUR CONTENT — the only part you need to touch
+   ─────────────────────────────────────────────────────────────── */
+
+/* The mandal's own photographs, grouped by the day they were taken and
+   in order within each day — so the wall runs from the aagman procession
+   through to the last aarti, the way the days actually went.
+
+   This list is generated. Add or remove photographs in images/ and run
+
+       python make-web-images.py
+
+   which rebuilds images/thumbs (the wall) and images/full (the lightbox)
+   from the originals, strips their GPS coordinates, and prints this array
+   ready to paste back over the one below.
+
+   `w` and `h` are the thumbnail's real pixel size. They are here so the
+   wall reserves each frame's shape before the photograph arrives and
+   nothing shifts under your thumb while eighty of them load.
+
+   A file that will not load leaves its frame standing with the Patola
+   weave showing through — never a broken-image icon. */
+var GALLERY = [
+  { day: '૨૭ ઓગસ્ટ · બુધવાર', items: [
+    { src: 'images/thumbs/img_8227.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8245.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8467.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8490.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8495.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8497.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8503.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8520.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8526.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8534.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8564.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8565.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8583.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8588.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8400.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8419.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img-20250827-wa0102.jpg', w: 360, h: 640 },
+    { src: 'images/thumbs/img_8733.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8733-copy.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8749.jpg', w: 640, h: 427 },
+  ] },
+  { day: '૨૮ ઓગસ્ટ · ગુરુવાર', items: [
+    { src: 'images/thumbs/img_8671.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8676.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8680.jpg', w: 427, h: 640 },
+    { src: 'images/thumbs/img_8684.jpg', w: 427, h: 640 },
+    { src: 'images/thumbs/img_8697.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8703.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8706.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8714.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9168.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8971.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8975.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8980.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8999.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9003.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9009.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9014.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9034.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9042.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9054.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9067.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9164.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9030.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9158.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_8986.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9025.jpg', w: 640, h: 427 },
+  ] },
+  { day: '૨૯ ઓગસ્ટ · શુક્રવાર', items: [
+    { src: 'images/thumbs/img_9478.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9469.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9463.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9452.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9427.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9411.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9404.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9385.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9382.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9377.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9429.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9413.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9438.jpg', w: 640, h: 427 },
+  ] },
+  { day: '૩૦ ઓગસ્ટ · શનિવાર', items: [
+    { src: 'images/thumbs/img_9614.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9639.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9640.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9645.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9646.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9662.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9676.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9677.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9687.jpg', w: 640, h: 427 },
+  ] },
+  { day: '૧ સપ્ટેમ્બર · સોમવાર', items: [
+    { src: 'images/thumbs/img_9969.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9951.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9945.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9941.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9928.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9925.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9914.jpg', w: 427, h: 640 },
+    { src: 'images/thumbs/img_9913.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9897.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9889.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9878.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9870.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9866.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9865.jpg', w: 640, h: 427 },
+    { src: 'images/thumbs/img_9872.jpg', w: 640, h: 427 },
+  ] },
+];
+
+/* Prefer a photo of your own idol over the hand-drawn art?
+   Point this at a PNG with a transparent background. */
+var BAPPA_IMAGE = null;   // e.g. 'photos/bappa.png'
+
+/* ── ગણપતિ અષ્ટોત્તરશતનામાવલી — the 108 names.
+
+   There is no single canonical list. Checked against two published
+   namāvalis and they diverge from about the fortieth name onward, so
+   this is one recension named openly in the panel rather than passed
+   off as the only one. It is the widely-printed list that opens
+   ગજાનન · ગણાધ્યક્ષ · વિઘ્નરાજ and closes on વિઘ્નેશ્વર.
+
+   If your paramparā recites a different order, this array is the only
+   thing to change — one line per name:  નામ | Roman | અર્થ
+   The Devanagari was transliterated to Gujarati mechanically, with
+   homorganic nasals written as anusvāra (ગંગા, not ગઙ્ગા) as Gujarati
+   orthography requires. ── */
+var NAMES = [
+  'ગજાનન|Gajānana|હાથી જેવું મુખ ધરાવનાર',
+  'ગણાધ્યક્ષ|Gaṇādhyakṣa|ગણોના અધિપતિ',
+  'વિઘ્નરાજ|Vighnarāja|વિઘ્નોના રાજા',
+  'વિનાયક|Vināyaka|સૌ જીવોના સ્વામી',
+  'દ્વૈમાતુર|Dvaimātura|બે માતાના પુત્ર',
+  'દ્વિમુખ|Dvimukha|બે મુખવાળા',
+  'પ્રમુખ|Pramukha|સૃષ્ટિના અગ્રણી દેવ',
+  'સુમુખ|Sumukha|સુંદર મુખવાળા',
+  'કૃતી|Kṛtī|સર્જન સ્વરૂપ',
+  'સુપ્રદીપ|Supradīpa|અજ્ઞાનનો અંધકાર હરનાર દીપ',
+  'સુખનિધિ|Sukhanidhi|સુખનો ભંડાર',
+  'સુરાધ્યક્ષ|Surādhyakṣa|દેવોના અધ્યક્ષ',
+  'સુરારિઘ્ન|Surārighna|દેવોના શત્રુઓનો નાશ કરનાર',
+  'મહાગણપતિ|Mahāgaṇapati|સર્વશક્તિમાન ગણપતિ',
+  'માન્ય|Mānya|સૌને પૂજનીય',
+  'મહાકાલ|Mahākāla|કાળના સ્વામી',
+  'મહાબલ|Mahābala|અપાર બળવાળા',
+  'હેરંબ|Heramba|માતાના લાડકા પુત્ર',
+  'લંબજઠર|Lambajaṭhara|લાંબા ઉદરવાળા',
+  'હ્રસ્વગ્રીવ|Hrasvagrīva|ટૂંકી ગ્રીવાવાળા',
+  'મહોદર|Mahodara|વિશાળ ઉદરવાળા',
+  'મદોત્કટ|Madotkaṭa|સદા ઉન્મુક્ત',
+  'મહાવીર|Mahāvīra|પરમ પરાક્રમી',
+  'મંત્રી|Mantrī|સર્વ મંત્રોના જ્ઞાતા',
+  'મંગલસ્વર|Maṅgalasvara|મંગલ સ્વરવાળા',
+  'પ્રમધ|Pramadha|સૃષ્ટિના મૂળ તત્ત્વ',
+  'પ્રથમ|Prathama|સૌથી પહેલાં પૂજાતા',
+  'પ્રાજ્ઞ|Prājña|પરમ બુદ્ધિમાન',
+  'વિઘ્નકર્તા|Vighnakartā|વિઘ્ન રચનાર',
+  'વિઘ્નહર્તા|Vighnahartā|વિઘ્ન હરનાર',
+  'વિશ્વનેતા|Viśvanetā|સમગ્ર સૃષ્ટિના નાયક',
+  'વિરાટ્પતિ|Virāṭpati|વિરાટ વિશ્વના સ્વામી',
+  'શ્રીપતિ|Śrīpati|સૌભાગ્યના દાતા',
+  'વાક્પતિ|Vākpati|વાણીના અધિષ્ઠાતા',
+  'શૃંગારી|Śṛṅgārī|સિંદૂરથી શોભતા',
+  'અશ્રિતવત્સલ|Āśritavatsala|શરણે આવેલા પર વાત્સલ્ય રાખનાર',
+  'શિવપ્રિય|Śivapriya|શિવના પ્રિય',
+  'શીઘ્રકારી|Śīghrakārī|ઝડપથી ઇચ્છા પૂરી કરનાર',
+  'શાશ્વત|Śāśvata|સદા અવિનાશી',
+  'બલ|Bala|બળ સ્વરૂપ',
+  'બલોત્થિત|Balotthita|જેમનું બળ સદા વધતું રહે',
+  'ભવાત્મજ|Bhavātmaja|ભવ એટલે શિવના પુત્ર',
+  'પુરાણપુરુષ|Purāṇapuruṣa|આદિ પુરુષ',
+  'પૂષા|Pūṣā|સૌનું પોષણ કરનાર',
+  'પુષ્કરોત્ષિપ્તવારી|Puṣkarotṣiptavārī|કમળભર્યાં જળમાં ક્રીડા કરનાર',
+  'અગ્રગણ્ય|Agragaṇya|ગણોમાં શ્રેષ્ઠ',
+  'અગ્રપૂજ્ય|Agrapūjya|સૌ પ્રથમ પૂજાતા',
+  'અગ્રગામી|Agragāmī|સૌની આગળ ચાલનાર',
+  'મંત્રકૃત્|Mantrakṛt|મંત્રોના રચયિતા',
+  'ચામીકરપ્રભ|Cāmīkaraprabha|સુવર્ણ સમાન તેજસ્વી',
+  'સર્વ|Sarva|સર્વ સ્વરૂપ',
+  'સર્વોપાસ્ય|Sarvopāsya|સૌથી ઉપાસ્ય',
+  'સર્વકર્તા|Sarvakartā|સર્વ કર્મના કર્તા',
+  'સર્વનેતા|Sarvanetā|સર્વના માર્ગદર્શક',
+  'સર્વસિદ્ધિપ્રદ|Sarvasiddhiprada|સર્વ સિદ્ધિ આપનાર',
+  'સિદ્ધિ|Siddhi|સ્વયં સિદ્ધિ સ્વરૂપ',
+  'પંચહસ્ત|Pañcahasta|પાંચ હાથવાળા',
+  'પાર્વતીનંદન|Pārvatīnandana|પાર્વતીના લાડકા પુત્ર',
+  'પ્રભુ|Prabhu|ચરાચરના મૂળ સ્વામી',
+  'કુમારગુરુ|Kumāraguru|કાર્તિકેયના ગુરુ',
+  'અક્ષોભ્ય|Akṣobhya|કદી વિચલિત ન થનાર',
+  'કુંજરાસુરભંજન|Kuñjarāsurabhañjana|કુંજરાસુરનો સંહાર કરનાર',
+  'પ્રમોદ|Pramoda|સદા પ્રસન્ન',
+  'મોદકપ્રિય|Modakapriya|મોદક જેમને પ્રિય છે',
+  'કાંતિમાન્|Kāntimān|તેજસ્વી મુખવાળા',
+  'ધૃતિમાન્|Dhṛtimān|ધૈર્યવાન',
+  'કામી|Kāmī|ઇચ્છા પૂર્ણ કરનાર',
+  'કપિત્થપનસપ્રિય|Kapitthapanasapriya|કોઠાં ને ફણસ જેમને પ્રિય',
+  'બ્રહ્મચારી|Brahmacārī|બ્રહ્મચર્યના પાલક',
+  'બ્રહ્મરૂપી|Brahmarūpī|બ્રહ્મ સ્વરૂપ',
+  'બ્રહ્મવિદ્યાદિદાનભૂ|Brahmavidyādidānabhū|બ્રહ્મવિદ્યાના દાતા',
+  'જિષ્ણુ|Jiṣṇu|સદા વિજયી',
+  'વિષ્ણુપ્રિય|Viṣṇupriya|વિષ્ણુના પ્રિય',
+  'ભક્તજીવિત|Bhaktajīvita|ભક્તોના પ્રાણ',
+  'જિતમન્મથ|Jitamanmatha|મન ને ઇન્દ્રિયોને જીતનાર',
+  'ઐશ્વર્યકારણ|Aiśvaryakāraṇa|ઐશ્વર્યના મૂળ',
+  'જ્યાયસ્|Jyāyas|સૌથી શ્રેષ્ઠ',
+  'યક્ષકિન્નરસેવિત|Yakṣakinnarasevita|યક્ષ ને કિન્નરોથી સેવાતા',
+  'ગંગાસુત|Gaṅgāsuta|ગંગા માતાના પુત્ર',
+  'ગણાધીશ|Gaṇādhīśa|ગણોના અધીશ',
+  'ગંભીરનિનદ|Gambhīraninada|ગંભીર નાદવાળા',
+  'વટુ|Vaṭu|બાળ સ્વરૂપે બિરાજતા',
+  'અભીષ્ટવરદ|Abhīṣṭavarada|મનવાંછિત વરદાન આપનાર',
+  'જ્યોતિસ્|Jyotis|જ્યોતિષના જ્ઞાતા',
+  'ભક્તનિધિ|Bhaktanidhi|ભક્તોનો ખજાનો',
+  'ભાવગમ્ય|Bhāvagamya|ભાવથી જ પમાય તેવા',
+  'મંગલપ્રદ|Maṅgalaprada|જીવનમાં મંગલ આપનાર',
+  'અવ્યક્ત|Avyakta|અપ્રગટ પરમ તત્ત્વ',
+  'અપ્રાકૃતપરાક્રમ|Aprākṛtaparākrama|અલૌકિક પરાક્રમવાળા',
+  'સત્યધર્મી|Satyadharmī|સત્યના માર્ગે ચાલનાર',
+  'સખા|Sakhā|ભક્તોના સાચા મિત્ર',
+  'સરસાંબુનિધિ|Sarasāmbunidhi|જેમને દૂર્વા પ્રિય છે',
+  'મહેશ|Maheśa|દેવોમાં મહાન',
+  'દિવ્યાંગ|Divyāṅga|દિવ્ય અંગોવાળા',
+  'મણિકિંકિણીમેખલ|Maṇikiṅkiṇīmekhala|રત્નજડિત કંદોરો ધારણ કરનાર',
+  'સમસ્તદેવતામૂર્તિ|Samastadevatāmūrti|સર્વ દેવોના સ્વરૂપ',
+  'સહિષ્ણુ|Sahiṣṇu|પરમ સહનશીલ',
+  'સતતોત્થિત|Satatotthita|સદા જાગૃત',
+  'વિઘાતકારી|Vighātakārī|ભક્તોના રક્ષક',
+  'વિશ્વગ્દૃક્|Viśvagdṛk|સમગ્ર વિશ્વ પર દૃષ્ટિ રાખનાર',
+  'વિશ્વરક્ષાકૃત્|Viśvarakṣākṛt|સૃષ્ટિનું રક્ષણ કરનાર',
+  'કલ્યાણગુરુ|Kalyāṇaguru|કલ્યાણ કરનાર ગુરુ',
+  'ઉન્મત્તવેષ|Unmattaveṣa|આનંદમાં મગ્ન રહેનાર',
+  'અપરાજિત|Aparājita|કદી ન હારનાર',
+  'સમસ્તજગદાધાર|Samastajagadādhāra|સમગ્ર જગતના આધાર',
+  'સર્વૈશ્વર્યપ્રદ|Sarvaiśvaryaprada|સર્વ ઐશ્વર્ય આપનાર',
+  'આક્રાંતચિદચિત્પ્રભુ|Ākrāntacidacitprabhu|જ્ઞાન ને ચિત્તના સ્વામી',
+  'વિઘ્નેશ્વર|Vighneśvara|સર્વ વિઘ્નોના નાશક'
+];
+
+
+/* ── પ્રશ્નોત્તરી — ten questions.
+
+   `a` is the correct answer and `o` the other three. They are shuffled
+   together at run time, so the right one is not sitting in the same
+   place every game and you can read this list without spoiling it.
+
+   `why` is shown after answering — right or wrong, both. It is the
+   reason the answer is the answer, never a verdict on you.
+
+   Everything here is the well-attested core of the story: parentage,
+   Kārtikeya, the mūṣaka, ekadanta, Vyāsa's dictation, modak, the eight
+   Aṣṭavināyaka, Bhādarvo, and visarjan on Anant Chaturdaśī. Two
+   questions I had drafted were cut on checking: the "21 blades of
+   durva" count and the custom of not looking at the moon. Both are
+   widely repeated and neither is carried by the source I checked, so
+   they are not asserted to anyone's children here. The durva question
+   that remains asks only what is offered, which is not in doubt.
+
+   To add a question, add a line. Nothing counts questions but the
+   array itself.  ── */
+var QUIZ = [
+  { q: 'બાપ્પાનાં માતા-પિતા કોણ?',
+    a: 'શિવ અને પાર્વતી',
+    o: ['વિષ્ણુ અને લક્ષ્મી', 'બ્રહ્મા અને સરસ્વતી', 'ઇન્દ્ર અને શચી'],
+    why: 'ગણપતિ <b>શિવ</b> અને <b>પાર્વતી</b>નાં પુત્ર છે. એટલે જ તેમને ગૌરીપુત્ર ને શિવસુત પણ કહે છે.' },
+
+  { q: 'બાપ્પાના ભાઈ કોણ?',
+    a: 'કાર્તિકેય',
+    o: ['હનુમાન', 'નંદી', 'અયપ્પા'],
+    why: '<b>કાર્તિકેય</b> — જેમને સ્કંદ, મુરુગન કે કાર્તિક પણ કહે છે — બાપ્પાના ભાઈ છે.' },
+
+  { q: 'બાપ્પાનું વાહન કયું?',
+    a: 'ઉંદર',
+    o: ['મોર', 'બળદ', 'સિંહ'],
+    why: 'બાપ્પાનું વાહન <b>મૂષક</b> એટલે ઉંદર છે. મોર કાર્તિકેયનું, બળદ નંદી શિવનું વાહન છે.' },
+
+  { q: '“એકદંત” નામનો અર્થ શું?',
+    a: 'એક જ દાંત ધરાવનાર',
+    o: ['એક જ હાથ ધરાવનાર', 'એકલા રહેનાર', 'એક જ મુખ ધરાવનાર'],
+    why: '<b>એક + દંત</b> = એક દાંત. બાપ્પાનો એક દાંત તૂટેલો છે, એટલે એકદંત.' },
+
+  { q: 'બાપ્પાએ પોતાનો તૂટેલો દાંત કલમ બનાવીને કયો ગ્રંથ લખ્યો?',
+    a: 'મહાભારત',
+    o: ['રામાયણ', 'ઋગ્વેદ', 'ભાગવત પુરાણ'],
+    why: 'વ્યાસ મુનિ બોલતા ગયા ને બાપ્પા લખતા ગયા — કલમ તૂટી ત્યારે પોતાનો દાંત તોડીને <b>મહાભારત</b> લખવાનું ચાલુ રાખ્યું.' },
+
+  { q: 'બાપ્પાને સૌથી પ્રિય મીઠાઈ કઈ?',
+    a: 'મોદક',
+    o: ['જલેબી', 'બરફી', 'શ્રીખંડ'],
+    why: '<b>મોદક</b> — ચોખાના લોટમાં ગોળ ને નારિયેળનું પૂરણ. એટલે જ બાપ્પાનું એક નામ મોદકપ્રિય છે.' },
+
+  { q: 'અષ્ટવિનાયક એટલે કેટલાં મંદિર?',
+    a: 'આઠ',
+    o: ['ચાર', 'અગિયાર', 'એકસો આઠ'],
+    why: '<b>અષ્ટ</b> એટલે આઠ. મહારાષ્ટ્રમાં ગણપતિનાં આઠ પ્રાચીન મંદિરોની આ યાત્રા છે.' },
+
+  { q: 'ગણેશ ચતુર્થી કયા મહિનામાં આવે?',
+    a: 'ભાદરવો',
+    o: ['શ્રાવણ', 'આસો', 'કારતક'],
+    why: 'ગણેશ ચતુર્થી <b>ભાદરવા</b> સુદ ચોથે આવે છે. “ચતુર્થી” એટલે ચોથ.' },
+
+  { q: 'વિસર્જન કયા દિવસે થાય?',
+    a: 'અનંત ચતુર્દશી',
+    o: ['શરદ પૂર્ણિમા', 'અમાસ', 'વસંત પંચમી'],
+    why: 'ઉત્સવ <b>અનંત ચતુર્દશી</b>એ પૂરો થાય — એ દિવસે બાપ્પાની મૂર્તિનું જળમાં વિસર્જન થાય છે.' },
+
+  { q: 'બાપ્પાની પૂજામાં કયું ઘાસ ચઢાવાય?',
+    a: 'દૂર્વા',
+    o: ['તુલસી', 'બીલીપત્ર', 'કમળ'],
+    why: '<b>દૂર્વા</b> — કુમળું ઘાસ — બાપ્પાને ચઢાવાય. બીલીપત્ર શિવને ને તુલસી વિષ્ણુને પ્રિય છે.' }
+];
+
+
+/* ── આશીર્વાદ — what the bell gives you.
+   Written in the idiom of a blessing actually spoken at a mandal:
+   short, addressed to you as તું/તારા, and about ordinary life — the
+   house, the work, the family, the year — rather than grand abstraction.
+   Bappa is વિઘ્નહર્તા, so most of these are about something being
+   removed or carried, not something being handed over.
+
+   Kept to one or two lines each because they have to sit on a
+   1080×1080 card as well as on screen. ── */
+var BLESSINGS = [
+  'બાપ્પા તારા દરેક વિઘ્નને દૂર કરે ને રસ્તો સરળ બનાવે.',
+  'તારા ઘરમાં સુખ, શાંતિ ને સમૃદ્ધિ સદા વસે.',
+  'જે કામ હાથમાં લે એ પાર પડે — બાપ્પાની કૃપા તારી સાથે રહે.',
+  'તારા મનની એક શુભ ઇચ્છા આ વરસે જરૂર પૂરી થાય.',
+  'બુદ્ધિ, વિવેક ને ધીરજ — ત્રણેય બાપ્પા તને આપે.',
+  'તારા આંગણે લક્ષ્મી ને સરસ્વતી બંનેનો વાસ રહે.',
+  'જે ચિંતા તને રાતે જગાડે છે, બાપ્પા એને હળવી કરે.',
+  'તારું આરોગ્ય સારું રહે ને ઘરના સૌ કુશળ રહે.',
+  'તારી મહેનતનું ફળ સમયસર ને પૂરેપૂરું મળે.',
+  'આ વરસ તારા માટે નવી શરૂઆતનું વરસ બને.',
+  'તારા પરિવારમાં પ્રેમ ને એખલાસ સદા જળવાઈ રહે.',
+  'મુશ્કેલી આવે તોય તારી હિંમત ડગે નહીં — બાપ્પા સાથે છે.',
+  'તારા અભ્યાસમાં ને કામમાં બાપ્પા બુદ્ધિનું બળ આપે.',
+  'જૂનાં દુઃખ પાછળ રહી જાય ને નવી ખુશી આગળ મળે.',
+  'તારા દરેક દિવસની શરૂઆત શુભ સમાચારથી થાય.',
+  'બાપ્પા તારા ઘરની રક્ષા કરે ને નજર ઉતારે.',
+  'તારા સંબંધોમાં મીઠાશ મોદક જેવી રહે.',
+  'જે ગુમાવ્યું છે એના કરતાં વધારે સારું તને મળે.',
+  'તારા હાથે કોઈનું ભલું થાય — એથી મોટો આશીર્વાદ કયો?',
+  'ધનની તંગી દૂર થાય ને ઘરમાં બરકત રહે.',
+  'તારો સ્વભાવ સરળ રહે ને સાથ આપનારા સાચા મળે.',
+  'બાપ્પા તારી શ્રદ્ધા ટકાવી રાખે — બાકીનું એ સંભાળી લેશે.',
+  'આવતા વરસે પણ આ જ ઉમંગથી બાપ્પાને આવકારવાનું થાય.',
+  'ગણપતિ બાપ્પા મોરિયા — તારા જીવનમાં સદા મંગલ રહે.'
+];
+
+
+/* ───────────────────────────────────────────────────────────────
+   2. PALETTE — read straight from the CSS tokens so there is one
+      source of truth for colour across DOM and WebGL.
+   ─────────────────────────────────────────────────────────────── */
+var CSS = getComputedStyle(document.documentElement);
+function token(name, fallback) {
+  var v = CSS.getPropertyValue(name).trim();
+  return v || fallback;
+}
+var C = {
+  night:   token('--night',    '#1A0B2E'),
+  nightLo: token('--night-lo', '#0E0619'),
+  patola:  token('--patola',   '#6E0F2A'),
+  marigold:token('--marigold', '#F5A11B'),
+  kumkum:  token('--kumkum',   '#D01B3C'),
+  durva:   token('--durva',    '#1E7A5E'),
+  varakh:  token('--varakh',   '#D9A521'),
+  silk:    token('--silk',     '#F2E4C9')
+};
+function col(hex) { return new THREE.Color(hex); }
+
+
+/* ───────────────────────────────────────────────────────────────
+   3. CAPABILITY + PERFORMANCE TIER
+      A fully-3D site is only worth it if it holds a framerate.
+      Tier decides particle counts, geometry detail, shadows and
+      how many lights are real; it can also drop live.
+   ─────────────────────────────────────────────────────────────── */
+var TIER = { LOW: 0, MED: 1, HIGH: 2 };
+var tier = TIER.HIGH;
+
+var isTouch  = matchMedia('(pointer: coarse)').matches;
+var isMobile = isTouch && Math.min(screen.width, screen.height) < 820;
+var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function detectTier() {
+  var cores = navigator.hardwareConcurrency || 2;
+  var small = Math.min(window.innerWidth, window.innerHeight);
+  var mem   = navigator.deviceMemory || navigator.deviceMemory === 0 ? navigator.deviceMemory : null;
+  if (isMobile && (cores <= 4 || small < 380 || mem === 1)) return TIER.LOW;
+  if (isMobile) return TIER.MED;
+  if (cores <= 4) return TIER.MED;
+  return TIER.HIGH;
+}
+
+/* Everything tier-dependent is derived here, so a live downgrade is
+   a single re-read rather than scattered conditionals. */
+var Q = {};
+function applyTier(t) {
+  tier = t;
+  Q.petalSeg   = [14, 18, 26][t];   // lotus petal mesh resolution
+  Q.waterSeg   = [1, 1, 1][t];      // water is shader-driven; 1 quad is enough
+  Q.waterDetail= [0, 0.55, 1][t];   // extra ripple octaves in the shader
+  Q.marigold   = [55, 110, 190][t]; // drifting petal count
+  Q.realLights = [2, 3, 3][t];      // diyas that actually cast light
+  Q.shadows    = t === TIER.HIGH;
+  Q.maxDpr     = [1.25, 1.5, 2][t];
+}
+
+function hasWebGL() {
+  try {
+    var c = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext &&
+      (c.getContext('webgl') || c.getContext('experimental-webgl')));
+  } catch (e) { return false; }
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   4. THE WORLD
+   ─────────────────────────────────────────────────────────────── */
+var canvas = document.getElementById('stage');
+var renderer, scene, camera, clock;
+var sky, water;
+var t0 = 0;                 // seconds since boot, pauses with the loop
+
+function buildRenderer() {
+  renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: tier === TIER.HIGH,
+    alpha: false,
+    powerPreference: 'high-performance',
+    stencil: false
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, Q.maxDpr));
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
+  /* 0.149 predates the r152 colour-management default. Without this the
+     whole scene renders washed out and the golds go muddy. */
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.shadowMap.enabled = Q.shadows;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setClearColor(col(C.nightLo), 1);
+}
+
+/* ── Sky: an inverted sphere with a vertical gradient. Cheaper and more
+      controllable than an HDRI, and it keeps the file asset-free. ── */
+function buildSky() {
+  var geo = new THREE.SphereGeometry(120, 32, 20);
+  var mat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    uniforms: {
+      cTop: { value: col(C.nightLo) },
+      cMid: { value: col('#2E1247') },
+      cBot: { value: col(C.patola)  }
+    },
+    vertexShader: [
+      'varying vec3 vP;',
+      'void main(){',
+      '  vP = position;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'uniform vec3 cTop; uniform vec3 cMid; uniform vec3 cBot;',
+      'varying vec3 vP;',
+      'void main(){',
+      '  float h = normalize(vP).y;',
+      '  vec3 c = mix(cBot, cMid, smoothstep(-0.55, 0.10, h));',
+      '  c = mix(c, cTop, smoothstep(-0.05, 0.72, h));',
+      /* a faint warm bloom low on the horizon, as if from unseen diyas */
+      '  c += vec3(0.115, 0.042, 0.010) * pow(max(0.0, 1.0 - abs(h + 0.13) * 4.6), 3.0);',
+      '  gl_FragColor = vec4(c, 1.0);',
+      '}'
+    ].join('\n')
+  });
+  sky = new THREE.Mesh(geo, mat);
+  sky.frustumCulled = false;
+  scene.add(sky);
+}
+
+/* ── Water: dark, rippling, with a pool of diya light where the lotus sits.
+      All shader work — no reflection pass, which is what makes it viable
+      on a phone. ── */
+var WATER_SIZE = 56;
+
+function buildWater() {
+  var geo = new THREE.PlaneGeometry(WATER_SIZE, WATER_SIZE, 1, 1);
+  var mat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    uniforms: {
+      uTime:   { value: 0 },
+      uSize:   { value: WATER_SIZE },
+      uDeep:   { value: col('#120725') },
+      uGlow:   { value: col(C.marigold) },
+      uCool:   { value: col('#3A1257') },
+      uDetail: { value: Q.waterDetail },
+      uReveal: { value: 0 }          /* the intro raises this from 0 */
+    },
+    vertexShader: [
+      'varying vec2 vUv;',
+      'void main(){',
+      '  vUv = uv;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'uniform float uTime; uniform float uDetail; uniform float uReveal;',
+      'uniform float uSize;',
+      'uniform vec3 uDeep; uniform vec3 uGlow; uniform vec3 uCool;',
+      'varying vec2 vUv;',
+      'void main(){',
+      /* work in world units, not UV — otherwise the falloff is sized to the
+         plane rather than to the scene, and the glow floods the frame */
+      '  vec2 p = (vUv - 0.5) * uSize;',
+      '  float d = length(p);',
+      /* ripples spreading out from under the lotus, wavelength in units */
+      '  float r = sin(d * 3.4 - uTime * 1.6) * 0.5 + 0.5;',
+      '  float extra = (sin(d * 6.1 - uTime * 2.3 + p.x * 0.9) * 0.5 + 0.5) * 0.60',
+      '              + (sin((p.x + p.y) * 4.2 + uTime * 1.10) * 0.5 + 0.5) * 0.34;',
+      '  r = mix(r, (r + extra) / 1.94, uDetail);',
+      '  float pool = exp(-d * 0.44);',              /* hugs the lotus base   */
+      '  float far  = smoothstep(23.0, 4.0, d);',    /* far water goes to night */
+      '  vec3 c = uDeep;',
+      '  c = mix(c, uCool, 0.26 * far);',
+      '  c += uGlow * pool * (0.34 + r * 0.30) * 0.60;',
+      '  c += uGlow * r * pool * far * 0.10;',       /* glints, only near     */
+      '  c *= far;',
+      '  gl_FragColor = vec4(c * uReveal, far * uReveal * 0.96);',
+      '}'
+    ].join('\n')
+  });
+  water = new THREE.Mesh(geo, mat);
+  water.rotation.x = -Math.PI / 2;
+  water.position.y = -0.02;
+  scene.add(water);
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   4b. TEXTURE WORKSHOP
+       Every texture is drawn here at runtime. Nothing is fetched,
+       which is what keeps this a single portable file.
+   ─────────────────────────────────────────────────────────────── */
+function cv2d(w, h) {
+  var c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  return c;
+}
+function texFrom(canvas) {
+  var t = new THREE.CanvasTexture(canvas);
+  t.encoding = THREE.sRGBEncoding;
+  t.anisotropy = renderer ? Math.min(4, renderer.capabilities.getMaxAnisotropy()) : 1;
+  return t;
+}
+
+/* A flame: hot ivory core bleeding out through marigold into kumkum. */
+var _flameTex = null;
+function flameTexture() {
+  if (_flameTex) return _flameTex;
+  var s = 128, c = cv2d(s, s), x = c.getContext('2d');
+  var g = x.createRadialGradient(s / 2, s * 0.60, 1, s / 2, s * 0.60, s * 0.47);
+  g.addColorStop(0.00, 'rgba(255,253,242,1)');
+  g.addColorStop(0.16, 'rgba(255,229,158,0.94)');
+  g.addColorStop(0.40, 'rgba(245,161,27,0.52)');
+  g.addColorStop(0.70, 'rgba(208,27,60,0.15)');
+  g.addColorStop(1.00, 'rgba(208,27,60,0)');
+  x.fillStyle = g; x.fillRect(0, 0, s, s);
+  _flameTex = texFrom(c);
+  return _flameTex;
+}
+
+/* A soft round glow, for the aura and for faking bloom. */
+var _glowTex = null;
+function glowTexture() {
+  if (_glowTex) return _glowTex;
+  var s = 256, c = cv2d(s, s), x = c.getContext('2d');
+  var g = x.createRadialGradient(s / 2, s / 2, 1, s / 2, s / 2, s / 2);
+  g.addColorStop(0.00, 'rgba(255,238,196,0.85)');
+  g.addColorStop(0.22, 'rgba(245,161,27,0.40)');
+  g.addColorStop(0.55, 'rgba(208,27,60,0.13)');
+  g.addColorStop(1.00, 'rgba(208,27,60,0)');
+  x.fillStyle = g; x.fillRect(0, 0, s, s);
+  _glowTex = texFrom(c);
+  return _glowTex;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   4c. THE LOTUS
+       38 petals in four rings, each a parametric sheet that is cupped
+       across its width, arced along its length, recurved at the tip
+       and twisted a little about its own rib. They hinge at the base,
+       so blooming is one rotation per petal.
+
+       The outer ring is the one that makes it read as a lotus rather
+       than a tulip: long petals falling almost flat, so the flower
+       has a wide plate under the tighter cup at its heart.
+   ─────────────────────────────────────────────────────────────── */
+var lotus, petals = [], pads = [], lotusGlow = null;
+
+/* The flower, the figure seated in it and his aura are one floating thing,
+   so they hang off one group and the water rocks all three together. Bob
+   the lotus alone and he comes unstuck from his own seat. */
+var raft = null;
+function theRaft() {
+  if (!raft) { raft = new THREE.Group(); scene.add(raft); }
+  return raft;
+}
+
+/* Silk, not plastic: veins fanning from the base, shade along both
+   edges, and the deep self-shadow where petals overlap at the centre.
+   Painted white and multiplied against the vertex gradient, so it only
+   ever darkens — the colour still comes from the mesh. */
+var _petalTex = null;
+function petalTexture() {
+  if (_petalTex) return _petalTex;
+  var w = 128, h = 320, c = cv2d(w, h), x = c.getContext('2d'), i;
+  x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, w, h);
+
+  /* Veins fan from the base — canvas bottom, since the texture is flipped
+     on upload — and reach nearly to the tip. */
+  x.lineCap = 'round';
+  for (i = -8; i <= 8; i++) {
+    if (!i) continue;
+    var fade = 1 - Math.abs(i) / 11;
+    x.strokeStyle = 'rgba(120,32,58,' + (0.20 * fade).toFixed(3) + ')';
+    x.lineWidth = 1.5;
+    x.beginPath();
+    x.moveTo(w / 2, h);
+    x.quadraticCurveTo(w / 2 + i * (w / 22), h * 0.42, w / 2 + i * (w / 15), h * 0.04);
+    x.stroke();
+  }
+  x.strokeStyle = 'rgba(120,32,58,.24)';
+  x.lineWidth = 3.0;
+  x.beginPath(); x.moveTo(w / 2, h); x.lineTo(w / 2, h * 0.02); x.stroke();
+
+  /* Shade along both edges. There is no flat clear band any more — a
+     petal with an unmodulated middle reads as chalk, so the falloff runs
+     all the way in and only bottoms out on the rib itself. */
+  var ge = x.createLinearGradient(0, 0, w, 0);
+  ge.addColorStop(0.00, 'rgba(88,22,44,.46)');
+  ge.addColorStop(0.18, 'rgba(88,22,44,.20)');
+  ge.addColorStop(0.44, 'rgba(88,22,44,.05)');
+  ge.addColorStop(0.52, 'rgba(88,22,44,.03)');
+  ge.addColorStop(0.62, 'rgba(88,22,44,.07)');
+  ge.addColorStop(0.86, 'rgba(88,22,44,.26)');
+  ge.addColorStop(1.00, 'rgba(88,22,44,.42)');
+  x.fillStyle = ge; x.fillRect(0, 0, w, h);
+
+  /* the deep self-shadow where petals overlap at the heart */
+  var gb = x.createLinearGradient(0, h, 0, h * 0.50);
+  gb.addColorStop(0, 'rgba(58,10,30,.50)');
+  gb.addColorStop(1, 'rgba(58,10,30,0)');
+  x.fillStyle = gb; x.fillRect(0, h * 0.48, w, h * 0.52);
+
+  /* Faint irregular mottling. Silk is never evenly dyed, and without it
+     the large front petals go glassy under the key. */
+  for (i = 0; i < 90; i++) {
+    var mx = Math.random() * w, my = Math.random() * h;
+    var mr = 5 + Math.random() * 16;
+    var gm = x.createRadialGradient(mx, my, 0, mx, my, mr);
+    gm.addColorStop(0, 'rgba(104,26,52,.055)');
+    gm.addColorStop(1, 'rgba(104,26,52,0)');
+    x.fillStyle = gm;
+    x.beginPath(); x.arc(mx, my, mr, 0, Math.PI * 2); x.fill();
+  }
+
+  _petalTex = texFrom(c);
+  return _petalTex;
+}
+
+/* A floating leaf, notch and all. Dark enough to sit in the water
+   rather than on it, with a rim that catches the diyas. */
+var _padTex = null;
+function padTexture() {
+  if (_padTex) return _padTex;
+  var s = 128, c = cv2d(s, s), x = c.getContext('2d'), i;
+  var r = s / 2 - 2, gap = 0.30;
+  x.translate(s / 2, s / 2);
+
+  x.beginPath();
+  x.arc(0, 0, r, gap, Math.PI * 2 - gap);
+  x.lineTo(0, 0);
+  x.closePath();
+  var g = x.createRadialGradient(0, 0, 2, 0, 0, r);
+  g.addColorStop(0.00, '#153F33');
+  g.addColorStop(0.70, '#0F2E28');
+  g.addColorStop(1.00, '#0A1F1C');
+  x.fillStyle = g; x.fill();
+
+  x.save();
+  x.clip();
+  x.strokeStyle = 'rgba(110,170,138,.15)';
+  x.lineWidth = 1.5;
+  for (i = 0; i < 15; i++) {
+    var a = gap + 0.04 + (i / 14) * (Math.PI * 2 - gap * 2 - 0.08);
+    x.beginPath(); x.moveTo(0, 0);
+    x.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    x.stroke();
+  }
+  x.restore();
+
+  x.strokeStyle = 'rgba(217,165,33,.13)';
+  x.lineWidth = 2.0;
+  x.beginPath(); x.arc(0, 0, r - 1.2, gap, Math.PI * 2 - gap); x.stroke();
+
+  _padTex = texFrom(c);
+  return _padTex;
+}
+
+function petalGeometry(p, seg) {
+  /* Across the width matters more than along the length: the cup is a
+     parabola, and five spans turn a parabola into a folded V — which is
+     what made the petals look like origami rather than flesh. */
+  var NU = seg, NV = Math.max(7, Math.round(seg * 0.72));
+  var pos = [], uvs = [], cls = [], idx = [];
+  var base = col('#FBE6CE'), mid = col('#E4657F'), tip = col('#9E0B36');
+  var i, j;
+  for (i = 0; i <= NU; i++) {
+    var u = i / NU;
+    /* A petal has to stay broad almost to its end. Taper it evenly from
+       the shoulder and the outer half narrows while its radius grows, so
+       neighbours pull apart and the ring turns into a ring of spikes —
+       which is the whole starburst problem. The width therefore rides a
+       long plateau and only closes in the last few per cent. */
+    var sh = Math.sin(Math.PI * Math.pow(u, 0.74));
+    var hw = (Math.pow(sh, 0.62) * 0.88 + 0.12)   /* full shoulders, ribbon edge */
+           * (1 - Math.pow(u, 13.0))               /* point in the last few %     */
+           * p.wide;
+    /* the whole cross-section rolls about the rib as it rises */
+    var tw = p.twist * u * u, ct = Math.cos(tw), st = Math.sin(tw);
+    for (j = 0; j <= NV; j++) {
+      var v = (j / NV) * 2 - 1, av = Math.abs(v);
+      var px = v * hw;
+      var pz = p.arc * u * u              /* the length arcs outward   */
+             - p.curl * Math.pow(u, 3.4)  /* and the tip recurves back */
+             + p.cup * v * v * 0.62;      /* the edges fall away       */
+      pos.push(px * ct - pz * st, u * p.len, px * st + pz * ct);
+      uvs.push((v + 1) / 2, u);
+      var c = u < 0.18
+        ? base.clone().lerp(mid, u / 0.18)
+        : mid.clone().lerp(tip, Math.pow((u - 0.18) / 0.82, 1.10));
+      /* the rim of a lotus petal is always deeper than its middle */
+      c.lerp(tip, Math.pow(av, 2.0) * 0.62);
+      cls.push(c.r, c.g, c.b);
+    }
+  }
+  for (i = 0; i < NU; i++) {
+    for (j = 0; j < NV; j++) {
+      var a = i * (NV + 1) + j, b = a + 1, d = a + NV + 1, e = d + 1;
+      idx.push(a, d, b, b, d, e);
+    }
+  }
+  var g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(cls, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+
+/* Rings opening progressively less as they go inward — so the heart still
+   cups him while the outer plate lies almost flat.
+
+   Three things stop it reading as a paper rosette. The petals are broad
+   enough to overlap their neighbours, so a ring is a surface and not a fan
+   of blades. Each one curves down along its length and then flicks back up
+   at the tip, which is the S a lotus petal actually makes. And the rings
+   are stacked in Y as well as splayed in angle, so they layer against each
+   other instead of sharing one plane.
+
+   The angles matter more than anything else. Opened much further than this
+   the whole flower flattens into one horizontal spray and, seen from a
+   camera near the water, becomes a thin band — a pinwheel rather than a
+   throne. The two innermost rings are deliberately long and near-upright:
+   that collar rising behind him is what says "seated in a lotus" instead
+   of "standing in front of one".
+
+   `phase` offsets a ring by half a step so it interleaves with the one
+   outside it. A real lotus is a spiral, not a stack of concentric rings —
+   and however broad a petal is, its very tip is narrower than its slot, so
+   every ring leaves a notch. The interleaved ring sits just under and
+   slightly flatter, filling those notches with pink instead of night. */
+var LOTUS_RINGS = [
+  { n: 13, len: 1.52, wide: 0.520, cup: 0.26, arc: 0.62, curl: 0.34, twist: 0.22, open: 0.96, y: 0.00, r: 0.345, phase: 0.0 },
+  { n: 13, len: 1.32, wide: 0.495, cup: 0.28, arc: 0.56, curl: 0.30, twist: 0.24, open: 1.05, y: 0.010, r: 0.375, phase: 0.5 },
+  { n: 11, len: 1.50, wide: 0.470, cup: 0.30, arc: 0.48, curl: 0.26, twist: 0.19, open: 0.90, y: 0.09, r: 0.295, phase: 0.0 },
+  { n: 11, len: 1.26, wide: 0.440, cup: 0.32, arc: 0.42, curl: 0.22, twist: 0.21, open: 0.99, y: 0.05, r: 0.320, phase: 0.5 },
+  { n:  9, len: 1.22, wide: 0.400, cup: 0.34, arc: 0.34, curl: 0.17, twist: 0.15, open: 0.74, y: 0.19, r: 0.225, phase: 0.0 },
+  { n:  7, len: 0.95, wide: 0.330, cup: 0.37, arc: 0.22, curl: 0.10, twist: 0.11, open: 0.55, y: 0.28, r: 0.160, phase: 0.0 }
+];
+
+/* Small, dark and well clear of the flower. Pads that crowd it turn the
+   shrine into a garden centre. */
+var PADS = [
+  { a: 0.85, r: 4.30, s: 1.05 },
+  { a: 2.10, r: 5.20, s: 0.80 },
+  { a: 3.30, r: 4.05, s: 1.20 },
+  { a: 4.55, r: 5.05, s: 0.72 },
+  { a: 5.60, r: 4.55, s: 0.92 }
+];
+
+function buildLotus() {
+  lotus = new THREE.Group();
+  petals = [];
+  pads = [];
+
+  var mat = new THREE.MeshStandardMaterial({
+    vertexColors: true,
+    map: petalTexture(),
+    roughness: 0.68,
+    metalness: 0.0,
+    side: THREE.DoubleSide,
+    emissive: col('#3A0A18'),
+    emissiveIntensity: 0.32
+  });
+
+  LOTUS_RINGS.forEach(function (ring, ri) {
+    var geo = petalGeometry(ring, Q.petalSeg);
+    /* Every tier gets every petal. Petal count is the silhouette — drop it
+       and the ring opens into gaps and the flower reads as a starburst,
+       which is exactly the failure a phone must not see. The saving lives
+       in Q.petalSeg instead: sixty-odd petals at fourteen segments is
+       around 20k triangles sharing one material, which no phone from the
+       last decade will notice. */
+    var n = ring.n;
+    for (var k = 0; k < n; k++) {
+      var az = ((k + ring.phase) / n) * Math.PI * 2 + ri * 0.19;
+      var pivot = new THREE.Group();
+      pivot.rotation.y = az;
+
+      var m = new THREE.Mesh(geo, mat);
+      m.position.set(0, ring.y, ring.r);
+      /* Per-petal variation, or the ring closes into a flat plate and
+         reads as a paper rosette. The sine term makes the rim undulate
+         so light crosses it at changing angles — which is what you
+         actually see as form. */
+      var jitter = (Math.sin(k * 12.9898 + ri * 78.233) * 0.5);
+      var closed = 0.05 + jitter * 0.03;
+      var open = ring.open + jitter * 0.17 + Math.sin(az * 2.7 + ri) * 0.075;
+      var tilt = jitter * 0.09;
+      m.rotation.x = closed;
+      m.rotation.z = tilt;
+      /* One geometry per ring, so length varies by scale instead. Tips that
+         all reach the same radius draw a clean spiked circle; a few per
+         cent of slop is what turns it back into a flower. */
+      m.scale.setScalar(1 + jitter * 0.13);
+      if (Q.shadows) { m.castShadow = true; m.receiveShadow = true; }
+
+      pivot.add(m);
+      lotus.add(pivot);
+      petals.push({
+        mesh: m, closed: closed, open: open, tilt: tilt, ring: ri,
+        delay: ri * 0.10 + k * 0.022,
+        phase: k * 1.7 + ri * 2.3
+      });
+    }
+  });
+
+  /* receptacle — the seed pod he is actually seated on, so its top has
+     to meet BAPPA_BASE_Y rather than sit under a gap. Kept dull: at full
+     brightness it out-shouts him, and he is the point. */
+  var pod = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.42, 0.30, 0.22, tier === TIER.LOW ? 16 : 24),
+    new THREE.MeshStandardMaterial({ color: col('#9C8F55'), roughness: 0.92 })
+  );
+  pod.position.y = 0.40;
+  lotus.add(pod);
+
+  /* The seeds and the gold stamen collar were tier-gated, which had it
+     backwards: that collar where the petals meet the pod is most of what
+     tells the eye "lotus", and it costs one instanced draw call plus seven
+     tiny spheres. A phone gets it too. */
+  var seedMat = new THREE.MeshStandardMaterial({ color: col('#8E7C3A'), roughness: 0.9 });
+  var seedGeo = new THREE.SphereGeometry(0.034, 6, 5);
+  for (var s = 0; s < 7; s++) {
+    var sa = (s / 7) * Math.PI * 2, sr = 0.11 + (s % 3) * 0.09;
+    var sd = new THREE.Mesh(seedGeo, seedMat);
+    sd.position.set(Math.cos(sa) * sr, 0.515, Math.sin(sa) * sr);
+    lotus.add(sd);
+  }
+
+  /* Stamens — the gold collar that rings a real lotus where the petals
+     meet the pod. One InstancedMesh, so eighteen of them cost one
+     draw call and can be spent freely. */
+  var stGeo = new THREE.CylinderGeometry(0.007, 0.016, 0.30, 4);
+  stGeo.translate(0, 0.15, 0);                 /* hinge at the base */
+  var stMat = new THREE.MeshStandardMaterial({
+    color: col('#E8C24A'), roughness: 0.42, metalness: 0.40,
+    emissive: col(C.marigold), emissiveIntensity: 0.28
+  });
+  var ns = 22;
+  var inst = new THREE.InstancedMesh(stGeo, stMat, ns);
+  var m4 = new THREE.Matrix4(), qLean = new THREE.Quaternion();
+  var qAz = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
+  var vp = new THREE.Vector3(), one = new THREE.Vector3(1, 1, 1);
+  for (var q = 0; q < ns; q++) {
+    var qa = (q / ns) * Math.PI * 2;
+    qLean.setFromAxisAngle(new THREE.Vector3(1, 0, 0), 0.46 + (q % 3) * 0.09);
+    qAz.setFromAxisAngle(up, qa);
+    qLean.premultiply(qAz);
+    vp.set(Math.sin(qa) * 0.30, 0.42, Math.cos(qa) * 0.30);
+    m4.compose(vp, qLean, one);
+    inst.setMatrixAt(q, m4);
+  }
+  inst.instanceMatrix.needsUpdate = true;
+  lotus.add(inst);
+
+  /* the light that lives in the heart of the flower */
+  lotusGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: glowTexture(), color: col('#FFD98A'),
+    transparent: true, opacity: 0,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  }));
+  lotusGlow.scale.set(2.0, 2.0, 1);
+  lotusGlow.position.y = 0.44;
+  lotus.add(lotusGlow);
+
+  /* The shade the flower casts on the water. A flat disc gives it a
+     hard rim that reads as a plate the lotus is standing on, so this
+     is a gradient that has no edge at all. */
+  var shadeTex = (function () {
+    var s = 128, c = cv2d(s, s), x = c.getContext('2d');
+    var g = x.createRadialGradient(s / 2, s / 2, 1, s / 2, s / 2, s / 2);
+    g.addColorStop(0.00, 'rgba(30,6,22,.72)');
+    g.addColorStop(0.42, 'rgba(30,6,22,.46)');
+    g.addColorStop(0.78, 'rgba(30,6,22,.13)');
+    g.addColorStop(1.00, 'rgba(30,6,22,0)');
+    x.fillStyle = g; x.fillRect(0, 0, s, s);
+    return texFrom(c);
+  })();
+  var skirt = new THREE.Mesh(
+    new THREE.PlaneGeometry(5.6, 5.6),
+    new THREE.MeshBasicMaterial({
+      map: shadeTex, transparent: true, depthWrite: false
+    })
+  );
+  skirt.rotation.x = -Math.PI / 2;
+  skirt.position.y = 0.008;
+  lotus.add(skirt);
+
+  theRaft().add(lotus);
+
+  /* Leaves, floating clear of the flower. A lotus alone on open water
+     reads as an ornament; with pads around it, it reads as a pond. */
+  var padGeo = new THREE.PlaneGeometry(1, 1);
+  var padTex = padTexture();
+  PADS.forEach(function (p, i) {
+    var mesh = new THREE.Mesh(padGeo, new THREE.MeshStandardMaterial({
+      map: padTex, transparent: true, roughness: 0.86, metalness: 0.0,
+      side: THREE.DoubleSide, depthWrite: false
+    }));
+    mesh.scale.setScalar(p.s * 1.15);
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.rotation.z = p.a * 1.7;
+    mesh.position.set(Math.cos(p.a) * p.r, 0.03, Math.sin(p.a) * p.r);
+    scene.add(mesh);
+    pads.push({ mesh: mesh, y: 0.03, spin: p.a * 1.7, phase: i * 2.1 });
+  });
+}
+
+
+
+/* ───────────────────────────────────────────────────────────────
+   4d. BAPPA — hand-drawn, in five flat layers
+       No 3D model of the deity. Each layer is SVG folk art on its
+       own plane, and because the planes really are separated in
+       depth, the parallax is genuine perspective rather than a
+       simulated effect. The group only *partly* turns to face the
+       camera, and that withheld rotation is what you read as depth.
+   ─────────────────────────────────────────────────────────────── */
+var bappa, bappaLayers = [], bappaReady = 0, bappaFade = 0;
+
+/* Kutch folk palette — flat saturated fills, thick ivory outlines. */
+var A = {
+  sk: '#E24D28', skd: '#B23718', iv: '#F2E4C9', go: '#D9A521',
+  ku: '#D01B3C', ma: '#F5A11B', pa: '#6E0F2A', du: '#1E7A5E', dk: '#3A1024'
+};
+
+function svgDoc(inner) {
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="400" height="480">'
+       + inner + '</svg>';
+}
+
+/* Rings of mirror-work (આભલા) — the Kutch signature. */
+function abhla(cx, cy, r, n, spread) {
+  var out = '';
+  for (var i = 0; i < n; i++) {
+    var a = (i / n) * Math.PI * 2;
+    var x = (cx + Math.cos(a) * spread).toFixed(1);
+    var y = (cy + Math.sin(a) * spread * 0.55).toFixed(1);
+    out += '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + A.iv + '"/>';
+  }
+  return out;
+}
+
+var BAPPA_ART = {
+  /* ── behind everything: seated body, belly, arms, dhoti, shawl ── */
+  body: svgDoc([
+    /* crossed legs, the padmasana base */
+    '<ellipse cx="200" cy="430" rx="152" ry="42" fill="' + A.iv + '"/>',
+    '<ellipse cx="200" cy="428" rx="143" ry="35" fill="' + A.ma + '"/>',
+    '<path d="M 74 424 Q 200 470 326 424" fill="none" stroke="' + A.ku + '" stroke-width="10"/>',
+    abhla(200, 430, 4.5, 9, 118),
+    /* shoulders */
+    '<ellipse cx="200" cy="300" rx="122" ry="60" fill="' + A.iv + '"/>',
+    '<ellipse cx="200" cy="300" rx="113" ry="51" fill="' + A.sk + '"/>',
+    /* right arm raised in blessing (abhaya mudra) */
+    '<path d="M 110 294 C 66 280 50 238 60 202" stroke="' + A.iv + '" stroke-width="44" fill="none" stroke-linecap="round"/>',
+    '<path d="M 110 294 C 66 280 50 238 60 202" stroke="' + A.sk + '" stroke-width="32" fill="none" stroke-linecap="round"/>',
+    '<circle cx="58" cy="186" r="29" fill="' + A.iv + '"/>',
+    '<circle cx="58" cy="186" r="22" fill="' + A.sk + '"/>',
+    '<path d="M 58 174 v 22" stroke="' + A.ku + '" stroke-width="5" stroke-linecap="round"/>',
+    /* left arm lowered, offering modak */
+    '<path d="M 290 296 C 332 290 348 328 334 360" stroke="' + A.iv + '" stroke-width="44" fill="none" stroke-linecap="round"/>',
+    '<path d="M 290 296 C 332 290 348 328 334 360" stroke="' + A.sk + '" stroke-width="32" fill="none" stroke-linecap="round"/>',
+    /* belly — Lambodara, and the frontmost part of him */
+    '<ellipse cx="200" cy="364" rx="120" ry="90" fill="' + A.iv + '"/>',
+    '<ellipse cx="200" cy="364" rx="111" ry="81" fill="' + A.sk + '"/>',
+    '<circle cx="200" cy="390" r="8" fill="' + A.skd + '"/>',
+    /* dhoti wrapped over the lower belly */
+    '<path d="M 92 382 Q 200 446 308 382 L 312 424 Q 200 462 88 424 Z" fill="' + A.ma + '" stroke="' + A.iv + '" stroke-width="6"/>',
+    '<path d="M 96 404 Q 200 456 304 404" fill="none" stroke="' + A.ku + '" stroke-width="7"/>',
+    /* shawl across the chest, in Patola maroon */
+    '<path d="M 116 264 Q 200 314 284 264 L 296 296 Q 200 350 104 296 Z" fill="' + A.pa + '" stroke="' + A.iv + '" stroke-width="6"/>',
+    '<path d="M 132 282 Q 200 322 268 282" fill="none" stroke="' + A.go + '" stroke-width="5" stroke-dasharray="3 11" stroke-linecap="round"/>',
+    /* the bowl of modak */
+    '<path d="M 296 356 h 74 l -12 34 h -50 Z" fill="' + A.go + '" stroke="' + A.iv + '" stroke-width="5"/>',
+    '<circle cx="315" cy="352" r="12" fill="' + A.iv + '"/>',
+    '<circle cx="341" cy="352" r="12" fill="' + A.iv + '"/>',
+    '<circle cx="328" cy="338" r="12" fill="' + A.iv + '"/>'
+  ].join('')),
+
+  /* ── the ears, one plane each so they part as you lean ── */
+  earL: svgDoc([
+    '<g transform="rotate(-13 102 188)">',
+    '<ellipse cx="102" cy="188" rx="68" ry="86" fill="' + A.iv + '"/>',
+    '<ellipse cx="102" cy="188" rx="59" ry="77" fill="' + A.sk + '"/>',
+    '<path d="M 122 142 C 74 158 70 218 112 236" fill="none" stroke="' + A.skd + '" stroke-width="10" stroke-linecap="round"/>',
+    '</g>',
+    '<circle cx="86" cy="268" r="15" fill="' + A.iv + '"/>',
+    '<circle cx="86" cy="268" r="9" fill="' + A.go + '"/>'
+  ].join('')),
+
+  earR: svgDoc([
+    '<g transform="rotate(13 298 188)">',
+    '<ellipse cx="298" cy="188" rx="68" ry="86" fill="' + A.iv + '"/>',
+    '<ellipse cx="298" cy="188" rx="59" ry="77" fill="' + A.sk + '"/>',
+    '<path d="M 278 142 C 326 158 330 218 288 236" fill="none" stroke="' + A.skd + '" stroke-width="10" stroke-linecap="round"/>',
+    '</g>',
+    '<circle cx="314" cy="268" r="15" fill="' + A.iv + '"/>',
+    '<circle cx="314" cy="268" r="9" fill="' + A.go + '"/>'
+  ].join('')),
+
+  /* ── head, trunk, tusks, eyes. The trunk is drawn first so the
+        head covers where it would otherwise cross the face. ── */
+  face: svgDoc([
+    '<path d="M 200 208 C 204 266 172 296 175 330 C 178 360 212 370 229 346" fill="none" stroke="' + A.iv + '" stroke-width="48" stroke-linecap="round"/>',
+    '<path d="M 200 208 C 204 266 172 296 175 330 C 178 360 212 370 229 346" fill="none" stroke="' + A.sk + '" stroke-width="36" stroke-linecap="round"/>',
+    /* trunk creases */
+    '<path d="M 187 276 q 16 7 30 -2" fill="none" stroke="' + A.skd + '" stroke-width="5" stroke-linecap="round"/>',
+    '<path d="M 176 306 q 15 8 30 -1" fill="none" stroke="' + A.skd + '" stroke-width="5" stroke-linecap="round"/>',
+    /* head */
+    '<ellipse cx="200" cy="180" rx="93" ry="87" fill="' + A.iv + '"/>',
+    '<ellipse cx="200" cy="180" rx="84" ry="78" fill="' + A.sk + '"/>',
+    /* Ekadanta — one tusk whole, one broken */
+    '<path d="M 144 250 q -14 30 6 48" fill="none" stroke="' + A.iv + '" stroke-width="17" stroke-linecap="round"/>',
+    '<path d="M 258 250 q 13 15 11 25" fill="none" stroke="' + A.iv + '" stroke-width="17" stroke-linecap="round"/>',
+    /* eyes, closed and at rest */
+    '<path d="M 154 170 q 21 17 42 1" fill="none" stroke="' + A.dk + '" stroke-width="7" stroke-linecap="round"/>',
+    '<path d="M 204 171 q 21 16 42 -1" fill="none" stroke="' + A.dk + '" stroke-width="7" stroke-linecap="round"/>',
+    '<path d="M 152 152 q 22 -11 44 -2" fill="none" stroke="' + A.dk + '" stroke-width="5" stroke-linecap="round" opacity="0.55"/>',
+    '<path d="M 204 150 q 22 -9 44 2" fill="none" stroke="' + A.dk + '" stroke-width="5" stroke-linecap="round" opacity="0.55"/>',
+    /* tilak */
+    '<path d="M 200 112 v 30" stroke="' + A.ku + '" stroke-width="9" stroke-linecap="round"/>',
+    '<path d="M 184 118 v 20" stroke="' + A.go + '" stroke-width="5" stroke-linecap="round"/>',
+    '<path d="M 216 118 v 20" stroke="' + A.go + '" stroke-width="5" stroke-linecap="round"/>'
+  ].join('')),
+
+  /* ── the mukut, frontmost ── */
+  crown: svgDoc([
+    '<path d="M 130 124 L 200 14 L 270 124 Z" fill="' + A.iv + '"/>',
+    '<path d="M 140 117 L 200 30 L 260 117 Z" fill="' + A.go + '"/>',
+    '<path d="M 168 112 L 200 56 L 232 112 Z" fill="' + A.ku + '"/>',
+    '<rect x="122" y="110" width="156" height="28" rx="12" fill="' + A.iv + '"/>',
+    '<rect x="128" y="115" width="144" height="18" rx="8" fill="' + A.go + '"/>',
+    '<circle cx="152" cy="124" r="5.5" fill="' + A.ku + '"/>',
+    '<circle cx="176" cy="124" r="5.5" fill="' + A.iv + '"/>',
+    '<circle cx="200" cy="124" r="5.5" fill="' + A.ku + '"/>',
+    '<circle cx="224" cy="124" r="5.5" fill="' + A.iv + '"/>',
+    '<circle cx="248" cy="124" r="5.5" fill="' + A.ku + '"/>',
+    '<circle cx="200" cy="14" r="13" fill="' + A.iv + '"/>',
+    '<circle cx="200" cy="14" r="8" fill="' + A.ma + '"/>'
+  ].join(''))
+};
+
+/* Depth order, back to front. The spread is what you see as dimension. */
+var BAPPA_STACK = [
+  { key: 'body',  z: -0.30 },
+  { key: 'earL',  z: -0.13 },
+  { key: 'earR',  z: -0.13 },
+  { key: 'face',  z:  0.00 },
+  { key: 'crown', z:  0.18 }
+];
+
+var BAPPA_W = 1.94, BAPPA_H = 2.33, BAPPA_BASE_Y = 0.47;
+/* his head sits at 180/480 down the artwork — everything that has to
+   register with him (aura, halo, later the toran) derives from this */
+var HEAD_Y = BAPPA_BASE_Y + BAPPA_H * 0.625;
+
+function bappaPlane(svg, z, order, w, h) {
+  var res = tier === TIER.LOW ? 1 : 2;
+  var canvas = cv2d(400 * res, 480 * res);
+  var tex = texFrom(canvas);
+  var mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(w, h),
+    new THREE.MeshBasicMaterial({
+      map: tex, transparent: true, opacity: 0,
+      depthWrite: false, side: THREE.DoubleSide
+    })
+  );
+  mesh.position.z = z;
+  mesh.renderOrder = 10 + order;
+
+  var img = new Image();
+  img.onload = function () {
+    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+    tex.needsUpdate = true;
+    bappaReady++;
+  };
+  img.onerror = function () { bappaReady++; };
+  /* a data URI is same-origin, so this neither taints the canvas nor
+     needs a server — it works from file:// */
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+
+  return { mesh: mesh, z: z };
+}
+
+function buildBappa() {
+  bappa = new THREE.Group();
+  bappaLayers = [];
+
+  if (BAPPA_IMAGE) {
+    /* your own cutout, as one billboard */
+    var tex = new THREE.TextureLoader().load(BAPPA_IMAGE);
+    tex.encoding = THREE.sRGBEncoding;
+    var m = new THREE.Mesh(
+      new THREE.PlaneGeometry(BAPPA_W, BAPPA_H),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0, depthWrite: false })
+    );
+    m.renderOrder = 12;
+    bappaLayers.push({ mesh: m, z: 0 });
+    bappa.add(m);
+    bappaReady = 1;
+  } else {
+    BAPPA_STACK.forEach(function (L, i) {
+      var layer = bappaPlane(BAPPA_ART[L.key], L.z, i, BAPPA_W, BAPPA_H);
+      bappaLayers.push(layer);
+      bappa.add(layer.mesh);
+    });
+  }
+
+  bappa.position.y = BAPPA_BASE_Y + BAPPA_H / 2;
+  theRaft().add(bappa);
+}
+
+function updateBappa(dt) {
+  if (!bappa) return;
+  var want = bappaReady >= bappaLayers.length ? bappaFade : 0;
+  bappaLayers.forEach(function (L) {
+    L.mesh.material.opacity = want;
+  });
+  /* Turn most of the way toward the camera, but hold some back —
+     the withheld rotation is the parallax between layers. */
+  var az = Math.atan2(camera.position.x, camera.position.z);
+  bappa.rotation.y = az * 0.62;
+  if (!reduceMotion) {
+    bappa.position.y = BAPPA_BASE_Y + BAPPA_H / 2
+      + Math.sin(t0 * 0.5) * 0.022 - 0.62 * (1 - bappaFade);
+  } else {
+    bappa.position.y = BAPPA_BASE_Y + BAPPA_H / 2;
+  }
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   4e. AURA — the prabhavali behind him
+   ─────────────────────────────────────────────────────────────── */
+var aura = {};
+
+function buildAura() {
+  aura.group = new THREE.Group();
+
+  aura.halo = new THREE.Mesh(
+    new THREE.TorusGeometry(0.98, 0.022, 6, tier === TIER.LOW ? 26 : 64),
+    new THREE.MeshBasicMaterial({
+      color: col(C.marigold), transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false
+    })
+  );
+  aura.halo.position.y = HEAD_Y;
+  aura.halo.position.z = -0.36;
+  aura.group.add(aura.halo);
+
+  aura.glow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: glowTexture(), color: col(C.marigold), transparent: true, opacity: 0,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  }));
+  aura.glow.scale.set(4.6, 4.6, 1);
+  aura.glow.position.set(0, HEAD_Y - 0.2, -0.5);
+  aura.group.add(aura.glow);
+
+  /* a ring of small flames — the prabhavali proper */
+  aura.rays = [];
+  if (tier > TIER.LOW) {
+    for (var i = 0; i < 14; i++) {
+      var a = (i / 14) * Math.PI * 2;
+      var s = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: flameTexture(), color: col('#FFD98A'), transparent: true, opacity: 0,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      }));
+      s.scale.set(0.30, 0.44, 1);
+      s.position.set(Math.cos(a) * 1.16, HEAD_Y + Math.sin(a) * 1.16, -0.42);
+      aura.group.add(s);
+      aura.rays.push({ sprite: s, phase: i * 0.9 });
+    }
+  }
+  theRaft().add(aura.group);
+}
+
+function updateAura() {
+  if (!aura.group) return;
+  var breath = reduceMotion ? 1 : 0.82 + Math.sin(t0 * 1.15) * 0.18;
+  breath *= 1 + aartiT * 0.55;
+  aura.halo.material.opacity = Math.min(1, 0.85 * bappaFade * breath);
+  /* the prabhavali turns faster while the aarti burns */
+  aura.halo.rotation.z = reduceMotion ? 0 : t0 * 0.10 + aartiT * 0.9;
+  aura.glow.material.opacity = Math.min(1, 0.40 * bappaFade * breath);
+  aura.rays.forEach(function (r) {
+    var f = reduceMotion ? 0.7 : 0.45 + Math.sin(t0 * 2.6 + r.phase) * 0.30;
+    r.sprite.material.opacity = Math.min(1, f * bappaFade * (1 + aartiT * 0.85));
+  });
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   4f. DIYAS — six on the water, only a few casting real light
+   ─────────────────────────────────────────────────────────────── */
+var diyas = [];
+
+function buildDiyas() {
+  var N = 6, R = 3.55;
+  var brass = new THREE.MeshStandardMaterial({
+    color: col('#8A6A22'), roughness: 0.40, metalness: 0.80,
+    emissive: col('#301F07'), emissiveIntensity: 1
+  });
+  var bowlGeo = new THREE.CylinderGeometry(0.19, 0.10, 0.12, tier === TIER.LOW ? 8 : 16);
+  var footGeo = new THREE.CylinderGeometry(0.055, 0.085, 0.04, tier === TIER.LOW ? 8 : 12);
+
+  for (var i = 0; i < N; i++) {
+    var a = (i / N) * Math.PI * 2 + 0.5;
+    var g = new THREE.Group();
+    g.position.set(Math.cos(a) * R, 0.055, Math.sin(a) * R);
+
+    var bowl = new THREE.Mesh(bowlGeo, brass);
+    var foot = new THREE.Mesh(footGeo, brass);
+    foot.position.y = -0.075;
+    g.add(bowl, foot);
+
+    var flame = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: flameTexture(), transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false
+    }));
+    flame.scale.set(0.26, 0.40, 1);
+    flame.position.y = 0.20;
+    g.add(flame);
+
+    var pool = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: glowTexture(), color: col(C.marigold), transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false
+    }));
+    pool.scale.set(1.5, 1.5, 1);
+    pool.position.y = 0.16;
+    g.add(pool);
+
+    var light = null;
+    if (i < Q.realLights) {
+      light = new THREE.PointLight(col('#FFB347'), 0, 7.5, 2);
+      light.position.y = 0.30;
+      g.add(light);
+    }
+
+    scene.add(g);
+    diyas.push({
+      group: g, flame: flame, pool: pool, light: light,
+      phase: i * 2.1, lit: 0, order: i
+    });
+  }
+}
+
+function updateDiyas() {
+  /* during the aarti every wick stands up and the three real lights
+     roughly double — the flare is all in gain, never in new objects */
+  var flare = 1 + aartiT * 1.05;
+  diyas.forEach(function (d) {
+    /* two detuned sines read as a wick guttering; no noise texture needed */
+    var f = reduceMotion ? 1
+      : 0.80 + Math.sin(t0 * 7.3 + d.phase) * 0.13 + Math.sin(t0 * 17.1 + d.phase * 2.7) * 0.07;
+    d.flame.material.opacity = Math.min(1, 0.95 * d.lit * f * flare);
+    d.flame.scale.set(0.26 * (0.92 + f * 0.10) * (1 + aartiT * 0.34),
+                      0.40 * (0.88 + f * 0.16) * (1 + aartiT * 0.62), 1);
+    d.pool.material.opacity = Math.min(1, 0.30 * d.lit * f * flare);
+    if (d.light) d.light.intensity = 2.5 * d.lit * f * (1 + aartiT * 1.5);
+  });
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   4g. THE INTRO
+       One orchestrated reveal, then the scene answers touch. This
+       is the only motion the visitor does not ask for.
+   ─────────────────────────────────────────────────────────────── */
+var intro = { t: 0, running: true };
+
+function seg(t, a, b) { return Math.max(0, Math.min(1, (t - a) / (b - a))); }
+function easeOut(x) { return 1 - Math.pow(1 - x, 3); }
+function backOut(x) {
+  var c = 1.42;
+  return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2);
+}
+
+function updateIntro(dt) {
+  if (reduceMotion) {
+    /* collapsed: everything simply is, after a beat */
+    intro.t += dt;
+    var on = intro.t > 0.25 ? 1 : 0;
+    diyas.forEach(function (d) { d.lit = on; });
+    petals.forEach(function (p) { p.mesh.rotation.x = p.open; });
+    bappaFade = on;
+    if (water) water.material.uniforms.uReveal.value = on;
+    if (intro.t > 0.4) intro.running = false;
+    return;
+  }
+
+  intro.t += dt;
+  var T = intro.t;
+
+  /* 0.0–0.8  the first diya takes light */
+  diyas.forEach(function (d) {
+    var at = d.order === 0 ? 0.15 : 4.25 + d.order * 0.16;
+    d.lit = easeOut(seg(T, at, at + 0.85));
+  });
+
+  /* 0.8–1.8  its light finds the water, and the bud on it */
+  if (water) {
+    water.material.uniforms.uReveal.value = easeOut(seg(T, 0.75, 2.0));
+  }
+
+  /* 1.8–3.4  the petals unfurl, outer ring first */
+  petals.forEach(function (p) {
+    var s = backOut(seg(T, 1.75 + p.delay, 1.75 + p.delay + 1.05));
+    var sway = Math.sin(t0 * 0.55 + p.phase) * 0.013;
+    p.mesh.rotation.x = p.closed + (p.open - p.closed) * s + sway * s;
+  });
+
+  /* 3.0–4.3  he rises from inside the flower */
+  bappaFade = easeOut(seg(T, 3.0, 4.30));
+
+  /* 4.2  the nameplate resolves */
+  if (T > 4.15 && !intro.named) {
+    intro.named = true;
+    document.getElementById('nameplate').classList.add('lit');
+  }
+
+  if (T > 5.6) intro.running = false;
+}
+
+/* The flower is never still. Three motions at different speeds, none of
+   them in step with the others: petals breathe on a wave that travels
+   outward ring by ring, each petal rocks a little on its own rib, and
+   the whole flower turns once in about five minutes — slow enough that
+   you notice it only by looking away and back. */
+function updateLotus() {
+  if (!lotus) return;
+
+  if (!intro.running && !reduceMotion) {
+    for (var i = 0; i < petals.length; i++) {
+      var p = petals[i];
+      /* the breath, travelling outward ring by ring */
+      var w = Math.sin(t0 * 0.55 - p.ring * 0.72 + p.phase * 0.11);
+      /* and a second, faster wave running round the ring the other way,
+         so no two petals are ever at the same angle at the same moment */
+      var w2 = Math.sin(t0 * 0.94 + p.phase * 0.83);
+      p.mesh.rotation.x = p.open + w * 0.085 + w2 * 0.026;
+      p.mesh.rotation.z = p.tilt + Math.sin(t0 * 0.43 + p.phase) * 0.045;
+      p.mesh.rotation.y = Math.sin(t0 * 0.31 + p.phase * 0.6) * 0.030;
+    }
+    /* fast enough to notice while you watch, slow enough that it never
+       becomes the thing you are looking at: about two minutes a turn */
+    lotus.rotation.y = t0 * 0.052;
+  }
+
+  /* Water rocks the whole raft — flower, figure and aura as one. Long
+     period and tiny amplitude, so it reads as buoyancy and not as a boat
+     in weather. */
+  if (raft && !reduceMotion) {
+    raft.position.y = Math.sin(t0 * 0.37) * 0.021;
+    raft.rotation.z = Math.sin(t0 * 0.29 + 1.1) * 0.0075;
+    raft.rotation.x = Math.sin(t0 * 0.24 + 2.7) * 0.0060;
+  }
+
+  if (lotusGlow) {
+    /* it kindles as the flower opens, then pulses with the same breath */
+    var lit = intro.running ? easeOut(seg(intro.t, 2.40, 4.10)) : 1;
+    var b = reduceMotion ? 0.19 : 0.19 + Math.sin(t0 * 0.55) * 0.070;
+    lotusGlow.material.opacity = Math.min(1, lit * b * (1 + aartiT * 2.2));
+  }
+
+  if (!reduceMotion) {
+    for (var q = 0; q < pads.length; q++) {
+      var pd = pads[q];
+      pd.mesh.position.y = pd.y + Math.sin(t0 * 0.42 + pd.phase) * 0.024;
+      pd.mesh.rotation.z = pd.spin + Math.sin(t0 * 0.13 + pd.phase) * 0.11;
+      /* pads tip on the swell as well, or they read as decals */
+      pd.mesh.rotation.y = Math.sin(t0 * 0.33 + pd.phase * 1.4) * 0.055;
+    }
+  }
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   5. CAMERA RIG
+      A scripted cinematic camera, not free orbit. Stations are
+      authored viewpoints; drag adds a decaying offset so you can
+      lean around the scene without ever getting lost in it.
+      (OrbitControls is ESM-only in 0.149 and unreachable from a
+      classic script — but free orbit would be wrong here anyway.)
+   ─────────────────────────────────────────────────────────────── */
+/* `tx` shifts the whole orbit centre sideways. With a panel open in
+   landscape that slides the lotus left of the sheet, so Bappa stays in
+   view instead of being covered by his own website. */
+var STATION = {
+  home:  { r: 7.8, az: 0,     el: 0.30, ty: 1.58, tx: 0,   fov: 42 },
+  wide:  { r: 9.9, az: 0,     el: 0.38, ty: 1.42, tx: 0,   fov: 46 },
+  panel: { r: 8.6, az: -0.34, el: 0.27, ty: 1.62, tx: 2.1, fov: 40 }
+};
+
+var rig = {
+  r: 15, az: 0, el: 0.62, ty: 0.7, tx: 0, fov: 52,          /* current  */
+  tr: 15, taz: 0, tel: 0.62, tty: 0.7, ttx: 0, tfov: 52,    /* target   */
+  azOff: 0, elOff: 0,                                        /* drag lean */
+  ease: 0.055
+};
+
+function goto(station, snap) {
+  var s = STATION[station] || STATION.home;
+  rig.tr = s.r; rig.taz = s.az; rig.tel = s.el;
+  rig.tty = s.ty; rig.ttx = s.tx || 0; rig.tfov = s.fov;
+  if (snap || reduceMotion) {
+    rig.r = rig.tr; rig.az = rig.taz; rig.el = rig.tel;
+    rig.ty = rig.tty; rig.tx = rig.ttx; rig.fov = rig.tfov;
+  }
+}
+
+function updateCamera(dt) {
+  var k = reduceMotion ? 1 : 1 - Math.pow(1 - rig.ease, dt * 60);
+  rig.r   += (rig.tr   - rig.r)   * k;
+  rig.az  += (rig.taz  - rig.az)  * k;
+  rig.el  += (rig.tel  - rig.el)  * k;
+  rig.ty  += (rig.tty  - rig.ty)  * k;
+  rig.tx  += (rig.ttx  - rig.tx)  * k;
+  rig.fov += (rig.tfov - rig.fov) * k;
+
+  /* the lean decays back to the authored framing */
+  if (!drag.active) {
+    rig.azOff *= Math.pow(0.90, dt * 60);
+    rig.elOff *= Math.pow(0.90, dt * 60);
+  }
+
+  /* a slow breath, so the scene is never dead still */
+  var breathe = reduceMotion ? 0 : Math.sin(t0 * 0.22) * 0.016;
+
+  var az = rig.az + rig.azOff + breathe;
+  var el = Math.max(-0.12, Math.min(1.05, rig.el + rig.elOff));
+  var cr = Math.cos(el) * rig.r;
+
+  camera.position.set(
+    rig.tx + Math.sin(az) * cr,
+    Math.sin(el) * rig.r + rig.ty,
+    Math.cos(az) * cr
+  );
+  camera.lookAt(rig.tx, rig.ty, 0);
+
+  if (Math.abs(camera.fov - rig.fov) > 0.01) {
+    camera.fov = rig.fov;
+    camera.updateProjectionMatrix();
+  }
+}
+
+/* ── Pointer: one gesture model for mouse, pen and touch ── */
+var drag = { active: false, id: null, x: 0, y: 0, ox: 0, oy: 0, moved: 0 };
+
+function onDown(e) {
+  if (drag.active) return;
+  drag.active = true; drag.id = e.pointerId;
+  drag.x = drag.ox = e.clientX;
+  drag.y = drag.oy = e.clientY;
+  drag.moved = 0;
+}
+function onMove(e) {
+  if (!drag.active || e.pointerId !== drag.id) return;
+  var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  drag.x = e.clientX; drag.y = e.clientY;
+  drag.moved += Math.abs(dx) + Math.abs(dy);
+  if (reduceMotion) return;
+  rig.azOff = Math.max(-0.55, Math.min(0.55, rig.azOff - dx * 0.0042));
+  rig.elOff = Math.max(-0.22, Math.min(0.34, rig.elOff + dy * 0.0026));
+}
+function onUp(e) {
+  if (!drag.active || e.pointerId !== drag.id) return;
+  drag.active = false; drag.id = null;
+}
+
+/* Hovering with a mouse gives the same lean, at a whisper. */
+function onHover(e) {
+  if (isTouch) return;
+  if (drag.active || reduceMotion) return;
+  var nx = (e.clientX / window.innerWidth) * 2 - 1;
+  var ny = (e.clientY / window.innerHeight) * 2 - 1;
+  rig.azOff += (-nx * 0.16 - rig.azOff) * 0.05;
+  rig.elOff += ( ny * 0.07 - rig.elOff) * 0.05;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   5b. NAVIGATION
+       Four real buttons, low in the frame. They are DOM, not scene
+       objects: a gold glyph over a pool of shade, no container and no
+       bar behind them, so they read as things lying in the pandal
+       rather than as a strip of chrome bolted across it.
+
+       Being real buttons, they are also the keyboard and screen-reader
+       route — there is no hidden twin nav to fall out of step with.
+   ─────────────────────────────────────────────────────────────── */
+var SECTIONS = [
+  { id: 'gallery', gu: 'ગેલેરી', en: 'Gallery',
+    sub: 'મંડળની ક્ષણો — આગમનથી વિસર્જન સુધી.' },
+  { id: 'quiz', gu: 'પ્રશ્નોત્તરી', en: 'Quiz',
+    sub: 'બાપ્પા વિશે દસ પ્રશ્નો. ખોટો જવાબ પણ કંઈક શીખવે છે.' },
+  { id: 'wishes', gu: 'શુભકામનાઓ', en: 'Blessings',
+    sub: 'ઘંટ વગાડો ને આશીર્વાદ મેળવો — અથવા કોઈને શુભકામના મોકલો.' },
+  { id: 'names', gu: '૧૦૮ નામ', en: '108 Names',
+    sub: 'ગણપતિ અષ્ટોત્તરશતનામાવલી — એક મણકો, એક નામ.' }
+];
+
+/* Stage 4 registers a builder here per section id. */
+var VIEWS = {};
+
+var active = null;                       /* open section id, or null */
+
+/* ── The glyphs. Each one is the section's own object — the frame you
+      hang photographs in, the modak on its dish, the bell you ring for a
+      blessing, the mala you count names on. Line-art in varakh gold, so
+      they belong to the same hand that drew the title. ── */
+var ICONS = {
+
+  /* a framed picture hanging from a garland swag */
+  gallery:
+    '<path class="ico-l" d="M2.6 3.8c4.6 3.7 9 5.5 13.4 5.5s8.8-1.8 13.4-5.5"/>' +
+    '<path class="ico-l" d="M16 9.3v1.5"/>' +
+    '<rect class="ico-f" x="6.2" y="10.8" width="19.6" height="16.4" rx="1.4"/>' +
+    '<rect class="ico-l" x="6.2" y="10.8" width="19.6" height="16.4" rx="1.4"/>' +
+    '<circle class="ico-l" cx="11.9" cy="16.2" r="1.85"/>' +
+    '<path class="ico-l" d="M7.6 25.2l4.7-5 3.1 3.3 3.7-4.7 5.3 6.4"/>',
+
+  /* a modak on a dish, pleats and all */
+  quiz:
+    '<path class="ico-f" d="M16 3.4c1.2 2.3 1.5 3.8 1.3 4.9 4.8 2.2 8.1 8.2 8.6 14.7H6.1C6.6 16.5 9.9 10.5 14.7 8.3c-.2-1.1.1-2.6 1.3-4.9z"/>' +
+    '<path class="ico-l" d="M16 3.4c1.2 2.3 1.5 3.8 1.3 4.9 4.8 2.2 8.1 8.2 8.6 14.7H6.1C6.6 16.5 9.9 10.5 14.7 8.3c-.2-1.1.1-2.6 1.3-4.9z"/>' +
+    '<path class="ico-l" d="M16 8.7v14.3M11.5 11.4l-1.1 11.6M20.5 11.4l1.1 11.6"/>' +
+    '<path class="ico-l" d="M3.4 23h25.2c-1 3.4-4 5.4-8 5.4h-9.2c-4 0-7-2-8-5.4z"/>',
+
+  /* a brass bell, mid-ring */
+  wishes:
+    '<circle class="ico-l" cx="16" cy="4.6" r="2"/>' +
+    '<path class="ico-f" d="M16 7c5.2 0 8.6 5.8 9.3 13.2.1 1.1-.7 2-1.8 2H8.5c-1.1 0-1.9-.9-1.8-2C7.4 12.8 10.8 7 16 7z"/>' +
+    '<path class="ico-l" d="M16 7c5.2 0 8.6 5.8 9.3 13.2.1 1.1-.7 2-1.8 2H8.5c-1.1 0-1.9-.9-1.8-2C7.4 12.8 10.8 7 16 7z"/>' +
+    '<path class="ico-l" d="M16 22.4v2.4"/>' +
+    '<circle class="ico-l" cx="16" cy="26.5" r="1.6"/>' +
+    '<path class="ico-l" d="M2.9 12.9c-1.1 2.4-1.1 4.9 0 7.3M29.1 12.9c1.1 2.4 1.1 4.9 0 7.3" opacity=".5"/>',
+
+  /* a strung mala — beads generated, so the ring stays even */
+  names: (function () {
+    var cx = 16, cy = 16.4, R = 9.1, n = 16, s = '', i, a;
+    s += '<circle class="ico-l" cx="' + cx + '" cy="' + cy + '" r="' + R + '" opacity=".34"/>';
+    for (i = 0; i < n; i++) {
+      /* offset by half a step so no bead sits where the guru bead goes */
+      a = Math.PI / 2 + ((i + 0.5) / n) * Math.PI * 2;
+      s += '<circle class="ico-b" cx="' + (cx + Math.cos(a) * R).toFixed(2) +
+           '" cy="' + (cy + Math.sin(a) * R).toFixed(2) + '" r="1.5"/>';
+    }
+    /* the guru bead, where a recitation begins and ends */
+    s += '<circle class="ico-f" cx="' + cx + '" cy="' + (cy + R) + '" r="2.7"/>';
+    s += '<circle class="ico-l" cx="' + cx + '" cy="' + (cy + R) + '" r="2.7"/>';
+    return s;
+  })()
+};
+
+var dockEl = null, dockLit = false;
+
+function buildDock() {
+  dockEl = document.getElementById('dock');
+
+  SECTIONS.forEach(function (s) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dbtn';
+
+    var svg = '<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">' +
+              ICONS[s.id] + '</svg>';
+    b.innerHTML = svg;
+
+    b.appendChild(document.createTextNode(s.gu));
+    var sm = document.createElement('small');
+    sm.lang = 'en';
+    sm.textContent = s.en;
+    b.appendChild(sm);
+
+    b.addEventListener('click', function () { openSection(s.id, b); });
+    dockEl.appendChild(b);
+  });
+}
+
+/* They arrive at the end of the reveal and stand aside for a panel.
+   One class toggle rather than a per-frame value — CSS carries the fade. */
+function setDock(on) {
+  if (on === dockLit || !dockEl) return;
+  dockLit = on;
+  dockEl.classList.toggle('lit', on);
+}
+function updateDock() {
+  setDock(!active && (!intro.running || intro.t >= 4.35));
+}
+
+
+/* ── Panels ── */
+var lastTrigger = null;
+var panelEl, sheetEl;
+
+function sectionById(id) {
+  for (var i = 0; i < SECTIONS.length; i++) if (SECTIONS[i].id === id) return SECTIONS[i];
+  return null;
+}
+
+/* Landscape slides the lotus clear of the sheet; portrait can only pull
+   back, since the sheet covers the lower two thirds. */
+function framePanel() {
+  if (window.innerWidth >= window.innerHeight) {
+    goto('panel');
+  } else {
+    rig.tr = 9.4; rig.taz = 0; rig.tel = 0.24;
+    rig.tty = 1.55; rig.ttx = 0; rig.tfov = STATION.home.fov + 4;
+    if (reduceMotion) {
+      rig.r = rig.tr; rig.az = rig.taz; rig.el = rig.tel;
+      rig.ty = rig.tty; rig.tx = rig.ttx; rig.fov = rig.tfov;
+    }
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   6b. ૧૦૮ નામ — the mala
+       Recitation state lives out here so closing the panel and
+       coming back does not lose your place. It is a count, not a
+       score: nothing is persisted past the visit.
+   ─────────────────────────────────────────────────────────────── */
+var mala = { i: 0, far: 0, list: false, done: false };
+
+var GU_DIGITS = '૦૧૨૩૪૫૬૭૮૯';
+function gu(n) {
+  var s = String(n), out = '', i;
+  for (i = 0; i < s.length; i++) out += GU_DIGITS.charAt(+s.charAt(i));
+  return out;
+}
+
+function nameAt(i) { return NAMES[i].split('|'); }
+
+function viewNames(root) {
+  var beads = [], faceEl, countEl, prevEl, nextEl, threadEl, doneEl;
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+
+  /* ── the header: how far along, and the way out to the list ── */
+  var head = el('div', 'mala-head');
+  countEl = el('span', 'mala-count');
+  /* polite, not assertive: this updates on every tap and must never
+     interrupt the name itself being read out */
+  countEl.setAttribute('aria-live', 'polite');
+  countEl.setAttribute('aria-atomic', 'true');
+  head.appendChild(countEl);
+
+  var toggle = el('button', 'quiet', 'યાદી જુઓ');
+  toggle.type = 'button';
+  toggle.addEventListener('click', function () {
+    mala.list = !mala.list;
+    render();
+  });
+  head.appendChild(toggle);
+  root.appendChild(head);
+
+  /* ── the thread ── */
+  threadEl = el('div', 'thread');
+  /* the beads duplicate what the counter already announces, and 108
+     extra stops would bury the keyboard. Pointer gets random access;
+     the keyboard gets the counter and the two buttons. */
+  threadEl.setAttribute('aria-hidden', 'true');
+  for (var b = 0; b < NAMES.length; b++) {
+    var bead = el('span', 'bead');
+    if ((b + 1) % 27 === 0) bead.className += ' mark';
+    if (b === NAMES.length - 1) bead.className += ' guru';
+    bead.setAttribute('data-i', b);
+    beads.push(bead);
+    threadEl.appendChild(bead);
+  }
+  threadEl.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('.bead') : null;
+    if (!t) return;
+    go(+t.getAttribute('data-i'), true);
+  });
+  root.appendChild(threadEl);
+
+  /* ── the name ── */
+  faceEl = el('button', 'face');
+  faceEl.type = 'button';
+  faceEl.setAttribute('aria-live', 'polite');
+  faceEl.appendChild(el('span', 'om', 'ૐ'));
+  faceEl.appendChild(el('span', 'nm'));
+  var rm = el('span', 'rm');
+  rm.lang = 'sa';
+  faceEl.appendChild(rm);
+  faceEl.appendChild(el('span', 'mn'));
+  faceEl.addEventListener('click', function () { go(mala.i + 1); });
+  root.appendChild(faceEl);
+
+  /* ── the two controls ── */
+  var nav = el('div', 'mala-nav');
+  prevEl = el('button', 'quiet', 'પાછળ');
+  prevEl.type = 'button';
+  prevEl.addEventListener('click', function () { go(mala.i - 1); });
+  nextEl = el('button', 'turn-next', 'આગળ');
+  nextEl.type = 'button';
+  nextEl.addEventListener('click', function () { go(mala.i + 1); });
+  nav.appendChild(prevEl);
+  nav.appendChild(nextEl);
+  root.appendChild(nav);
+
+  doneEl = el('div', 'aarti-done');
+  doneEl.hidden = true;
+  doneEl.appendChild(el('b', null, 'આરતી'));
+  doneEl.appendChild(el('span', null,
+    'એકસો આઠ નામ પૂરાં થયાં. બાપ્પાના આશીર્વાદ સદા તમારી સાથે રહે.'));
+  root.appendChild(doneEl);
+
+  var note = el('p', 'src-note',
+    'આ ગણપતિ અષ્ટોત્તરશતનામાવલીની એક પ્રચલિત આવૃત્તિ છે. ' +
+    'પરંપરા પ્રમાણે નામોનો ક્રમ થોડો જુદો પણ હોઈ શકે.');
+  root.appendChild(note);
+
+  var listEl = el('ol', 'mala-list');
+  listEl.hidden = true;
+  root.appendChild(listEl);
+  var listBuilt = false;
+
+  function buildList() {
+    if (listBuilt) return;
+    listBuilt = true;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < NAMES.length; i++) {
+      var p = nameAt(i);
+      var li = el('li');
+      li.setAttribute('data-i', i);
+      li.appendChild(el('span', 'n', gu(i + 1)));
+      var g = el('span', 'g', p[0]);
+      var e = el('em', null, p[1]);
+      e.lang = 'sa';
+      g.appendChild(e);
+      li.appendChild(g);
+      li.appendChild(el('span', 'm', p[2]));
+      frag.appendChild(li);
+    }
+    listEl.appendChild(frag);
+    listEl.addEventListener('click', function (ev) {
+      var t = ev.target.closest ? ev.target.closest('li') : null;
+      if (!t) return;
+      mala.list = false;
+      go(+t.getAttribute('data-i'), true);
+      render();
+    });
+    /* the list is built the first time it is asked for, which is after
+       paint() has already run — so it has to be caught up by hand or it
+       opens with nothing marked however far you had counted */
+    markTold();
+  }
+
+  function markTold() {
+    var items = listEl.children;
+    for (var j = 0; j < items.length; j++) {
+      items[j].className = j <= mala.far ? 'told' : '';
+    }
+  }
+
+  function go(i, jump) {
+    if (i < 0 || i >= NAMES.length) return;
+    mala.i = i;
+    if (i > mala.far) mala.far = i;
+    /* the finale fires once, on first arrival at the last bead */
+    if (i === NAMES.length - 1 && !mala.done) {
+      mala.done = true;
+      if (typeof fireAarti === 'function') fireAarti();
+    }
+    paint(!jump);
+  }
+
+  /* centring by hand rather than scrollIntoView, which on a nested
+     scroller will happily scroll the sheet as well */
+  function centreBead(smooth) {
+    var t = beads[mala.i];
+    if (!t || !threadEl.clientWidth) return;
+    var x = t.offsetLeft - threadEl.clientWidth / 2 + t.offsetWidth / 2;
+    x = Math.max(0, Math.min(x, threadEl.scrollWidth - threadEl.clientWidth));
+    if (smooth && !reduceMotion && threadEl.scrollTo) {
+      threadEl.scrollTo({ left: x, behavior: 'smooth' });
+    } else {
+      threadEl.scrollLeft = x;
+    }
+  }
+
+  function paint(animate) {
+    var p = nameAt(mala.i);
+    countEl.textContent = '';
+    countEl.appendChild(document.createTextNode(gu(mala.i + 1)));
+    countEl.appendChild(el('i', null, ' / ' + gu(NAMES.length)));
+
+    faceEl.querySelector('.nm').textContent = p[0];
+    faceEl.querySelector('.rm').textContent = p[1];
+    faceEl.querySelector('.mn').textContent = p[2];
+    if (animate && !reduceMotion) {
+      faceEl.classList.remove('turn');
+      /* forcing layout is what actually restarts a CSS animation */
+      void faceEl.offsetWidth;
+      faceEl.classList.add('turn');
+    }
+
+    for (var i = 0; i < beads.length; i++) {
+      var c = beads[i].className.replace(/ (told|now)\b/g, '');
+      if (i < mala.i) c += ' told';
+      else if (i === mala.i) c += ' now';
+      beads[i].className = c;
+    }
+    centreBead(animate);
+
+    prevEl.disabled = mala.i === 0;
+    var last = mala.i === NAMES.length - 1;
+    nextEl.disabled = last;
+    nextEl.textContent = last ? 'પૂરું' : 'આગળ';
+    doneEl.hidden = !mala.done;
+
+    markTold();
+  }
+
+  function render() {
+    var reciting = !mala.list;
+    threadEl.hidden = !reciting;
+    faceEl.hidden = !reciting;
+    nav.hidden = !reciting;
+    doneEl.hidden = !reciting || !mala.done;
+    note.hidden = !reciting;
+    if (mala.list) buildList();
+    listEl.hidden = !mala.list;
+    toggle.textContent = mala.list ? 'મણકા ફેરવો' : 'યાદી જુઓ';
+    if (reciting) centreBead(false);
+  }
+
+  paint(false);
+  render();
+  /* the thread has no width until the sheet has been laid out */
+  requestAnimationFrame(function () { centreBead(false); });
+}
+
+VIEWS.names = viewNames;
+
+
+/* ───────────────────────────────────────────────────────────────
+   6c. પ્રશ્નોત્તરી — ten questions
+       Same rule as the mala: progress lives out here, so closing
+       the panel mid-game and coming back keeps your place. Nothing
+       is persisted past the visit — there is no high score to chase.
+   ─────────────────────────────────────────────────────────────── */
+var quiz = null;
+
+/* Fisher–Yates. Shuffling both the order of the questions and the
+   order of each one's answers, so the right answer is never in a
+   learnable position. */
+function shuffled(arr) {
+  var a = arr.slice(), i, j, t;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function newQuiz() {
+  quiz = {
+    i: 0,
+    picked: [],                 /* index into q.opts, per question */
+    /* Set once the result has been shown. A round you finished is a
+       thing you did — closing the panel to look at Bappa and coming
+       back should return you to your score, not to the last question
+       with the result thrown away. */
+    done: false,
+    qs: shuffled(QUIZ).map(function (src) {
+      var opts = shuffled([src.a].concat(src.o));
+      return { q: src.q, why: src.why, opts: opts, right: opts.indexOf(src.a) };
+    })
+  };
+  return quiz;
+}
+
+/* The `why` lines carry <b> for the fact being taught. Rather than
+   hand author text to innerHTML, split on the tag and build the two
+   node types by hand — same result, and nothing in this file can ever
+   parse as markup by accident. */
+function richText(parent, s) {
+  var parts = String(s).split(/<b>|<\/b>/), i;
+  for (i = 0; i < parts.length; i++) {
+    if (!parts[i]) continue;
+    if (i % 2) {
+      var b = document.createElement('b');
+      b.textContent = parts[i];
+      parent.appendChild(b);
+    } else {
+      parent.appendChild(document.createTextNode(parts[i]));
+    }
+  }
+}
+
+/* a modak: pointed pleated top, wide rounded base, sitting on its dish.
+   Two pleat strokes run down from the tip — that is what tells it from
+   a laddu or a bell at this size. */
+var MODAK_PATH = 'M12 2.8c3.2 4.1 6.6 8.7 6.6 11.6 0 2.6-2.9 4.2-6.6 4.2' +
+                 's-6.6-1.6-6.6-4.2C5.4 11.5 8.8 6.9 12 2.8z' +
+                 'M12 3.4v14.9 M9.2 7.6c-.5 3.4-.6 7-.3 10.4' +
+                 'M14.8 7.6c.5 3.4.6 7 .3 10.4' +
+                 'M4.9 20.2h14.2';
+
+function scoreOf() {
+  var n = 0, i;
+  for (i = 0; i < quiz.qs.length; i++) {
+    if (quiz.picked[i] === quiz.qs[i].right) n++;
+  }
+  return n;
+}
+
+/* The blessing is tiered, and the bottom tier is not a consolation —
+   getting it wrong and being told why is the point of the thing. */
+function blessingFor(n, total) {
+  if (n === total) return 'તું તો બાપ્પાનો લાડકો! એકેય ભૂલ નહીં.';
+  if (n >= total - 2) return 'બહુ સરસ! બાપ્પાની કથા તને બરાબર આવડે છે.';
+  if (n >= total / 2) return 'સારું! હવે જે રહી ગયું એ પણ યાદ રહી જશે.';
+  return 'વાંધો નહીં — દરેક ખોટો જવાબ પણ એક નવી વાત શીખવી ગયો.';
+}
+
+function viewQuiz(root) {
+  if (!quiz) newQuiz();
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+
+  function modak() {
+    var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('class', 'mk');
+    s.setAttribute('viewBox', '0 0 24 24');
+    s.setAttribute('aria-hidden', 'true');
+    var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', MODAK_PATH);
+    s.appendChild(p);
+    return s;
+  }
+
+  /* ── header: ten beads and the count ── */
+  var head = el('div', 'q-head');
+  var track = el('div', 'q-track');
+  track.setAttribute('aria-hidden', 'true');     /* the count says it in words */
+  var dots = [];
+  for (var d = 0; d < quiz.qs.length; d++) {
+    var dot = el('span', 'q-dot');
+    dots.push(dot);
+    track.appendChild(dot);
+  }
+  head.appendChild(track);
+  var ofEl = el('span', 'q-of');
+  head.appendChild(ofEl);
+  root.appendChild(head);
+
+  /* ── the question on its leaf ── */
+  var leaf = el('div', 'q-leaf');
+  var qEl = el('h3');
+  leaf.appendChild(qEl);
+  root.appendChild(leaf);
+
+  /* ── the four offerings ── */
+  var optsEl = el('div', 'q-opts');
+  /* a radiogroup would promise arrow-key selection we don't implement;
+     these are four buttons and Tab reaches each one */
+  optsEl.setAttribute('role', 'group');
+  root.appendChild(optsEl);
+
+  /* ── the teaching line, announced when it appears ── */
+  var whyEl = el('p', 'q-why');
+  whyEl.hidden = true;
+  whyEl.setAttribute('aria-live', 'polite');
+  root.appendChild(whyEl);
+
+  var nav = el('div', 'q-nav');
+  var nextEl = el('button', 'turn-next');
+  nextEl.type = 'button';
+  nextEl.addEventListener('click', function () {
+    if (quiz.i < quiz.qs.length - 1) {
+      quiz.i++;
+      paint();
+      /* a new question starts at the question, not wherever the last
+         answer left the scroll */
+      var sheet = nextEl.closest ? nextEl.closest('.sheet') : null;
+      if (sheet) sheet.scrollTop = 0;
+    } else showScore();
+  });
+  nav.appendChild(nextEl);
+  root.appendChild(nav);
+
+  function answered() { return quiz.picked[quiz.i] != null; }
+
+  function pick(k) {
+    if (answered()) return;
+    quiz.picked[quiz.i] = k;
+    paint();
+    /* move focus to the way forward — after answering, that is the only
+       thing left to do, and on a phone it is below the fold */
+    nextEl.focus({ preventScroll: true });
+    /* preventScroll keeps portrait from jumping, where the button is
+       already in view. Landscape is 390px tall and the button lands well
+       under the fold, so scroll it up — but only when it is actually out
+       of sight, and only as far as it needs. */
+    reveal(nextEl);
+  }
+
+  /* scroll the sheet just enough to bring an element fully into view */
+  function reveal(node) {
+    var sheet = node.closest ? node.closest('.sheet') : null;
+    if (!sheet) return;
+    var nb = node.getBoundingClientRect(), sb = sheet.getBoundingClientRect();
+    var under = nb.bottom - (sb.bottom - 12);
+    var over = (sb.top + 12) - nb.top;
+    var by = under > 0 ? under : (over > 0 ? -over : 0);
+    if (!by) return;
+    if (!reduceMotion && sheet.scrollBy) sheet.scrollBy({ top: by, behavior: 'smooth' });
+    else sheet.scrollTop += by;
+  }
+
+  function paint() {
+    var Q = quiz.qs[quiz.i];
+    var mine = quiz.picked[quiz.i];
+    var done = mine != null;
+
+    ofEl.textContent = gu(quiz.i + 1) + ' / ' + gu(quiz.qs.length);
+
+    for (var i = 0; i < dots.length; i++) {
+      var c = 'q-dot';
+      var p = quiz.picked[i];
+      if (p != null) c += p === quiz.qs[i].right ? ' right' : ' wrong';
+      if (i === quiz.i) c += ' at';
+      dots[i].className = c;
+    }
+
+    qEl.textContent = Q.q;
+
+    optsEl.textContent = '';
+    for (var k = 0; k < Q.opts.length; k++) {
+      var b = el('button', 'q-opt');
+      b.type = 'button';
+      b.appendChild(modak());
+      b.appendChild(el('span', null, Q.opts[k]));
+      if (done) {
+        b.disabled = true;
+        if (k === Q.right) b.className += ' is-right';
+        else if (k === mine) b.className += ' is-mine';
+        else b.className += ' is-dim';
+      } else {
+        (function (idx) {
+          b.addEventListener('click', function () { pick(idx); });
+        })(k);
+      }
+      optsEl.appendChild(b);
+    }
+
+    whyEl.hidden = !done;
+    if (done) {
+      whyEl.textContent = '';
+      richText(whyEl, Q.why);
+    }
+
+    nextEl.hidden = !done;
+    nextEl.textContent = quiz.i === quiz.qs.length - 1 ? 'પરિણામ' : 'આગળ';
+  }
+
+  function showScore() {
+    var n = scoreOf(), total = quiz.qs.length;
+    quiz.done = true;
+
+    root.textContent = '';
+    var wrap = el('div', 'q-score');
+
+    var tally = el('div', 'tally');
+    tally.appendChild(document.createTextNode(gu(n)));
+    tally.appendChild(el('i', null, ' / ' + gu(total)));
+    /* the number is the result; announce it, and the blessing with it */
+    tally.setAttribute('aria-live', 'polite');
+    wrap.appendChild(tally);
+
+    wrap.appendChild(el('p', 'bless', blessingFor(n, total)));
+
+    var again = el('div', 'again');
+    var btn = el('button', 'turn-next', 'ફરી રમો');
+    btn.type = 'button';
+    btn.addEventListener('click', function () {
+      newQuiz();
+      root.textContent = '';
+      viewQuiz(root);
+    });
+    again.appendChild(btn);
+    wrap.appendChild(again);
+
+    root.appendChild(wrap);
+    btn.focus({ preventScroll: true });
+  }
+
+  if (quiz.done) showScore(); else paint();
+}
+
+VIEWS.quiz = viewQuiz;
+
+
+/* ───────────────────────────────────────────────────────────────
+   6d. શુભકામનાઓ — ring the bell, then pass the blessing on
+   ─────────────────────────────────────────────────────────────── */
+
+/* The bag is refilled and reshuffled when it empties, so you see all 24
+   before you see any of them twice — and the join is checked so the
+   last of one bag is never the first of the next. A plain random pick
+   repeats within a few taps and reads as broken. */
+var blessBag = [], blessLast = null;
+function nextBlessing() {
+  if (!blessBag.length) {
+    blessBag = shuffled(BLESSINGS);
+    if (blessBag.length > 1 && blessBag[blessBag.length - 1] === blessLast) {
+      blessBag.unshift(blessBag.pop());
+    }
+  }
+  blessLast = blessBag.pop();
+  return blessLast;
+}
+
+/* Drawn at 1080×1080 because that is what WhatsApp and Instagram want.
+   Everything is procedural — no image to fetch, so the card works from
+   a file:// page with no network at all. */
+var CARD = 1080;
+/* The card is drawn in the same two faces as the page. Declared here
+   because drawCard() below reads them. */
+var SERIF_STACK = '"Noto Serif Gujarati", Shruti, "Nirmala UI", Georgia, serif';
+var SANS_STACK  = '"Noto Sans Gujarati", Shruti, "Nirmala UI", system-ui, sans-serif';
+
+function fitFont(ctx, text, px, weight, family, maxW) {
+  var s = px;
+  while (s > 18) {
+    ctx.font = weight + ' ' + s + 'px ' + family;
+    if (ctx.measureText(text).width <= maxW) break;
+    s -= 2;
+  }
+  return s;
+}
+
+function wrapLines(ctx, text, maxW) {
+  var words = String(text).split(' '), lines = [], line = '';
+  for (var i = 0; i < words.length; i++) {
+    var test = line ? line + ' ' + words[i] : words[i];
+    if (ctx.measureText(test).width > maxW && line) {
+      lines.push(line); line = words[i];
+    } else { line = test; }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+/* one repeat of a Patola-ish double-ikat band: diamond, bar, diamond */
+function patolaBand(ctx, x, y, w, h) {
+  var unit = 60, n = Math.ceil(w / unit), i;
+  ctx.save();
+  ctx.translate(x, y);
+  for (i = 0; i < n; i++) {
+    var ox = i * unit, mid = h / 2;
+    ctx.fillStyle = i % 2 ? '#6E0F2A' : '#1E7A5E';
+    ctx.beginPath();
+    ctx.moveTo(ox + unit / 2, 2);
+    ctx.lineTo(ox + unit - 4, mid);
+    ctx.lineTo(ox + unit / 2, h - 2);
+    ctx.lineTo(ox + 4, mid);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(242,228,201,.55)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#D9A521';
+    ctx.beginPath();
+    ctx.arc(ox + unit / 2, mid, 3.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function marigoldCluster(ctx, cx, cy, r) {
+  var p, i;
+  for (p = 0; p < 3; p++) {
+    var ang = p * 2.2, dx = Math.cos(ang) * r * 0.9, dy = Math.sin(ang) * r * 0.9;
+    var rr = r * (p === 0 ? 1 : 0.66);
+    ctx.fillStyle = p % 2 ? '#F5A11B' : '#D9761B';
+    for (i = 0; i < 8; i++) {
+      var a = (i / 8) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.ellipse(cx + dx + Math.cos(a) * rr * .55, cy + dy + Math.sin(a) * rr * .55,
+                  rr * .42, rr * .30, a, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = '#6E0F2A';
+    ctx.beginPath();
+    ctx.arc(cx + dx, cy + dy, rr * .26, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/* The same five-petal mark the back control wears, redrawn in canvas
+   calls from the identical coordinates. The card is the piece of this
+   site that travels on its own, so it carries the site's own glyph
+   rather than a second lotus invented for the occasion.
+   Plain beziers, not Path2D — nothing to feature-detect. */
+function lotusGlyph(ctx, cx, cy, size, color) {
+  var k = size / 48;
+  ctx.save();
+  ctx.translate(cx - 24 * k, cy - 22 * k);
+  ctx.scale(k, k);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.4;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  ctx.beginPath();                       /* the upright centre petal */
+  ctx.moveTo(24, 10);
+  ctx.bezierCurveTo(28, 15, 28, 22, 24, 27);
+  ctx.bezierCurveTo(20, 22, 20, 15, 24, 10);
+  ctx.closePath();
+  ctx.stroke();
+
+  ctx.beginPath();                       /* the open bowl of outer petals */
+  ctx.moveTo(24, 27);
+  ctx.bezierCurveTo(20, 23, 14, 22, 9, 24);
+  ctx.bezierCurveTo(12, 29, 18, 32, 24, 31);
+  ctx.bezierCurveTo(30, 32, 36, 29, 39, 24);
+  ctx.bezierCurveTo(34, 22, 28, 23, 24, 27);
+  ctx.closePath();
+  ctx.stroke();
+
+  ctx.beginPath();                       /* the two leaning side petals */
+  ctx.moveTo(14, 14);
+  ctx.bezierCurveTo(19, 16, 22, 21, 23, 27);
+  ctx.moveTo(34, 14);
+  ctx.bezierCurveTo(29, 16, 26, 21, 25, 27);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawCard(cv, name, blessing) {
+  var ctx = cv.getContext('2d');
+  var S = CARD, pad = 46, inner = pad + 54;
+
+  /* night ground */
+  var g = ctx.createLinearGradient(0, 0, 0, S);
+  g.addColorStop(0, '#24103F');
+  g.addColorStop(0.55, '#1A0B2E');
+  g.addColorStop(1, '#0E0619');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, S, S);
+
+  /* a warm pool behind the name, as if a diya were standing just out
+     of frame */
+  var glow = ctx.createRadialGradient(S / 2, S * .47, 20, S / 2, S * .47, S * .52);
+  glow.addColorStop(0, 'rgba(245,161,27,.22)');
+  glow.addColorStop(1, 'rgba(245,161,27,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, S, S);
+
+  /* Patola border on all four sides */
+  var bw = 38;
+  ctx.save();
+  patolaBand(ctx, pad, pad, S - pad * 2, bw);
+  ctx.translate(S, S); ctx.rotate(Math.PI);
+  patolaBand(ctx, pad, pad, S - pad * 2, bw);
+  ctx.restore();
+  ctx.save();
+  ctx.translate(0, S); ctx.rotate(-Math.PI / 2);
+  patolaBand(ctx, pad, pad, S - pad * 2, bw);
+  ctx.translate(S, S); ctx.rotate(Math.PI);
+  patolaBand(ctx, pad, pad, S - pad * 2, bw);
+  ctx.restore();
+
+  /* inner gold rule */
+  ctx.strokeStyle = 'rgba(217,165,33,.75)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(inner, inner, S - inner * 2, S - inner * 2);
+
+  /* corners */
+  marigoldCluster(ctx, inner + 6, inner + 6, 26);
+  marigoldCluster(ctx, S - inner - 6, inner + 6, 26);
+  marigoldCluster(ctx, inner + 6, S - inner - 6, 26);
+  marigoldCluster(ctx, S - inner - 6, S - inner - 6, 26);
+
+  var maxW = S - inner * 2 - 96;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+
+  lotusGlyph(ctx, S / 2, 250, 140, 'rgba(217,165,33,.9)');
+
+  /* The seal is fixed to the bottom and the lotus to the top; the block
+     between them is centred in what's left rather than starting at a
+     fixed y. A one-line blessing and a three-line one then both sit in
+     the middle of the card instead of leaving a quarter of it empty. */
+  var LBL = 40, NAME_PX = 118, LINE = 66, GAP = 34;
+  var top = 316, bottom = 826;
+
+  var nameSize = 0;
+  if (name) nameSize = fitFont(ctx, name, NAME_PX, '700', SERIF_STACK, maxW);
+
+  /* lay the blessing out first, since its line count sets the height */
+  ctx.font = '600 46px ' + SERIF_STACK;
+  var blSize = 46;
+  var lines = wrapLines(ctx, blessing, maxW);
+  if (lines.length > 3) {
+    blSize = 40;
+    ctx.font = '600 ' + blSize + 'px ' + SERIF_STACK;
+    lines = wrapLines(ctx, blessing, maxW);
+  }
+
+  var blockH = lines.length * LINE;
+  if (name) blockH += LBL + GAP + nameSize + GAP;
+  var y = (top + bottom) / 2 - blockH / 2;
+
+  if (name) {
+    y += LBL;
+    ctx.fillStyle = '#C9B695';
+    ctx.font = '400 ' + LBL + 'px ' + SANS_STACK;
+    ctx.fillText('પ્રિય', S / 2, y);
+    y += GAP + nameSize;
+    ctx.font = '700 ' + nameSize + 'px ' + SERIF_STACK;
+    ctx.fillStyle = '#D9A521';
+    ctx.shadowColor = 'rgba(245,161,27,.5)';
+    ctx.shadowBlur = 30;
+    ctx.fillText(name, S / 2, y);
+    ctx.shadowBlur = 0;
+    y += GAP;
+  }
+
+  ctx.fillStyle = '#F2E4C9';
+  ctx.font = '600 ' + blSize + 'px ' + SERIF_STACK;
+  for (var i = 0; i < lines.length; i++) {
+    ctx.fillText(lines[i], S / 2, y + LINE * (i + 0.78));
+  }
+
+  /* the seal */
+  var sy = S - inner - 96;
+  ctx.strokeStyle = 'rgba(217,165,33,.45)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(S / 2 - 130, sy - 54);
+  ctx.lineTo(S / 2 + 130, sy - 54);
+  ctx.stroke();
+
+  ctx.fillStyle = '#D9A521';
+  ctx.font = '700 44px ' + SERIF_STACK;
+  ctx.fillText('હરિવંદના કા રાજા', S / 2, sy);
+
+  ctx.fillStyle = 'rgba(201,182,149,.78)';
+  ctx.font = '400 24px ' + SANS_STACK;
+  /* Set plainly. Spacing this out by inserting spaces between letters
+     would split the conjuncts — બાપ્પા would render as બા પ્ પા — which
+     is the one thing a Gujarati card must not do. */
+  ctx.fillText('ગણપતિ બાપ્પા મોરિયા', S / 2, sy + 42);
+}
+
+/* Canvas does not wait for webfonts — draw too early and the card is
+   rendered in the fallback face, silently. Ask for the two faces we
+   actually use, with a Gujarati sample so the right subset loads. */
+var cardFontsReady = null;
+function whenCardFonts() {
+  if (cardFontsReady) return cardFontsReady;
+  var d = document;
+  if (!d.fonts || !d.fonts.load) {
+    cardFontsReady = Promise.resolve();
+  } else {
+    cardFontsReady = Promise.all([
+      d.fonts.load('700 96px "Noto Serif Gujarati"', 'બાપ્પા'),
+      d.fonts.load('400 40px "Noto Sans Gujarati"', 'પ્રિય')
+    ]).catch(function () {});
+  }
+  return cardFontsReady;
+}
+
+function cardBlob(cv) {
+  return new Promise(function (res) {
+    if (cv.toBlob) cv.toBlob(function (b) { res(b); }, 'image/png');
+    else res(null);
+  });
+}
+
+function viewWishes(root) {
+  var blessing = null;
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+  function svgEl(tag, attrs) {
+    var e = document.createElementNS('http://www.w3.org/2000/svg', tag), k;
+    for (k in attrs) if (attrs.hasOwnProperty(k)) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  /* ── the bell ── */
+  var bellWrap = el('div', 'w-bell');
+  var btn = el('button', 'bell-btn');
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'ઘંટ વગાડો ને આશીર્વાદ મેળવો');
+
+  var svg = svgEl('svg', { 'class': 'bell-svg', viewBox: '0 0 120 150', 'aria-hidden': 'true' });
+  var defs = svgEl('defs', {});
+  var rg = svgEl('radialGradient', { id: 'bellGlow' });
+  rg.appendChild(svgEl('stop', { offset: '0%',   'stop-color': '#F5A11B', 'stop-opacity': '.55' }));
+  rg.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#F5A11B', 'stop-opacity': '0' }));
+  defs.appendChild(rg);
+  svg.appendChild(defs);
+  svg.appendChild(svgEl('circle', { 'class': 'ha', cx: '60', cy: '74', r: '58' }));
+  /* sound, leaving */
+  svg.appendChild(svgEl('path', { 'class': 'wv', d: 'M18 62c-5 8-5 18 0 26' }));
+  svg.appendChild(svgEl('path', { 'class': 'wv', d: 'M102 62c5 8 5 18 0 26' }));
+  /* cord, crown, body, rim, clapper */
+  svg.appendChild(svgEl('path', { 'class': 'br', d: 'M60 4v12' }));
+  svg.appendChild(svgEl('path', { 'class': 'br', d: 'M60 16a9 9 0 1 1 0 18 9 9 0 1 1 0-18z' }));
+  svg.appendChild(svgEl('path', { 'class': 'br', d: 'M60 34c-4 0-7 3-7 7v4c-16 6-27 22-27 41 0 5-3 9-7 12h82c-4-3-7-7-7-12 0-19-11-35-27-41v-4c0-4-3-7-7-7z' }));
+  svg.appendChild(svgEl('path', { 'class': 'br', d: 'M15 98h90' }));
+  svg.appendChild(svgEl('path', { 'class': 'bd', d: 'M33 74h54' }));
+  svg.appendChild(svgEl('path', { 'class': 'bd', d: 'M28 86h64' }));
+  svg.appendChild(svgEl('path', { 'class': 'br', d: 'M60 98v14' }));
+  svg.appendChild(svgEl('circle', { 'class': 'cl', cx: '60', cy: '118', r: '7' }));
+  btn.appendChild(svg);
+  bellWrap.appendChild(btn);
+  bellWrap.appendChild(el('p', 'w-hint', 'ઘંટ પર ટચ કરો'));
+  root.appendChild(bellWrap);
+
+  /* ── the blessing ── */
+  var blessEl = el('div', 'w-bless empty', 'ઘંટ વાગશે ને બાપ્પાનો આશીર્વાદ અહીં આવશે.');
+  blessEl.setAttribute('aria-live', 'polite');
+  root.appendChild(blessEl);
+
+  var againWrap = el('div', 'w-again');
+  var againBtn = el('button', 'quiet', 'બીજો આશીર્વાદ');
+  againBtn.type = 'button';
+  againBtn.hidden = true;
+  againBtn.addEventListener('click', ring);
+  againWrap.appendChild(againBtn);
+  root.appendChild(againWrap);
+
+  function ring() {
+    blessing = nextBlessing();
+    blessEl.className = 'w-bless';
+    blessEl.textContent = blessing;
+    againBtn.hidden = false;
+    /* restart the animations even if one is already running */
+    btn.classList.remove('ring');
+    blessEl.classList.remove('turn');
+    void btn.offsetWidth;
+    btn.classList.add('ring');
+    blessEl.classList.add('turn');
+    paintCard();
+  }
+  btn.addEventListener('click', ring);
+
+  /* ── passing it on ── */
+  var send = el('div', 'w-send');
+  send.appendChild(el('h3', null, 'કોઈને મોકલો'));
+  send.appendChild(el('p', null,
+    'નામ લખો — આ જ આશીર્વાદનું કાર્ડ બની જશે, જે તમે વૉટ્સએપ પર મોકલી શકો.'));
+
+  var field = el('label', 'w-field');
+  field.appendChild(el('span', null, 'જેને મોકલવું છે એનું નામ'));
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.maxLength = 22;         /* longer than this and the card stops being a card */
+  input.placeholder = 'દા.ત. મીરા';
+  input.setAttribute('autocomplete', 'off');
+  field.appendChild(input);
+  send.appendChild(field);
+
+  var cardWrap = el('div', 'w-card');
+  var cv = document.createElement('canvas');
+  cv.width = CARD; cv.height = CARD;
+  cv.setAttribute('role', 'img');
+  cardWrap.appendChild(cv);
+  send.appendChild(cardWrap);
+
+  var acts = el('div', 'w-acts');
+  var canShareFile = !!(navigator.share && navigator.canShare);
+  var saveBtn = el('button', canShareFile ? 'quiet' : 'turn-next', 'ઇમેજ સેવ કરો');
+  saveBtn.type = 'button';
+  var shareBtn = el('button', 'turn-next', 'શેર કરો');
+  shareBtn.type = 'button';
+  /* on a phone the wish is going straight to WhatsApp, so share leads;
+     on a desktop with no share sheet, save is the only real action and
+     there is no point showing a button that would fall back to it */
+  if (canShareFile) { acts.appendChild(saveBtn); acts.appendChild(shareBtn); }
+  else { acts.appendChild(saveBtn); }
+  send.appendChild(acts);
+  send.appendChild(el('p', 'w-note', 'કાર્ડ ૧૦૮૦×૧૦૮૦ — વૉટ્સએપ ને ઇન્સ્ટાગ્રામ માટે તૈયાર.'));
+  root.appendChild(send);
+
+  /* ── card painting ── */
+  var pending = false;
+  function paintCard() {
+    if (pending) return;
+    pending = true;
+    whenCardFonts().then(function () {
+      pending = false;
+      var nm = input.value.trim();
+      var bl = blessing || BLESSINGS[BLESSINGS.length - 1];
+      drawCard(cv, nm, bl);
+      cv.setAttribute('aria-label',
+        (nm ? 'પ્રિય ' + nm + '. ' : '') + bl + ' — હરિવંદના કા રાજા');
+    });
+  }
+  var typing = null;
+  input.addEventListener('input', function () {
+    clearTimeout(typing);
+    typing = setTimeout(paintCard, 120);
+  });
+  /* Enter in a single-field form should do the obvious thing, not
+     nothing — redraw now and drop the keyboard on a phone */
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); clearTimeout(typing); paintCard(); input.blur(); }
+  });
+
+  function fileName() { return 'harivandana-shubhkamna.png'; }
+
+  saveBtn.addEventListener('click', function () {
+    cardBlob(cv).then(function (b) {
+      if (!b) return;
+      var url = URL.createObjectURL(b);
+      var a = document.createElement('a');
+      a.href = url; a.download = fileName();
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    });
+  });
+
+  shareBtn.addEventListener('click', function () {
+    cardBlob(cv).then(function (b) {
+      if (!b) return;
+      var f = new File([b], fileName(), { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) {
+        navigator.share({ files: [f], text: blessing || '' }).catch(function () {});
+      } else {
+        saveBtn.click();
+      }
+    });
+  });
+
+  paintCard();
+}
+VIEWS.wishes = viewWishes;
+
+
+/* ───────────────────────────────────────────────────────────────
+   6e. ગેલેરી — the wall
+       Eighty-odd photographs of five days. The whole design problem
+       here is restraint: the pictures are the content, and every
+       device I could add competes with them. So the section adds
+       exactly two things the photographs cannot carry themselves —
+       which day each belongs to, and a way to see one large.
+
+       No invented captions. I do not know these people's names or
+       what any given frame is of, and a wall of guessed labels
+       ('ભક્તિ', 'ઉલ્લાસ') under real photographs of real families
+       is worse than no labels at all.
+   ─────────────────────────────────────────────────────────────── */
+
+/* Flattened once: the lightbox walks one list, the wall reads the
+   groups. Both point at the same objects, so `i` means the same
+   thing in either. */
+var GPHOTOS = (function () {
+  var out = [], g, j;
+  for (g = 0; g < GALLERY.length; g++) {
+    for (j = 0; j < GALLERY[g].items.length; j++) {
+      var it = GALLERY[g].items[j];
+      it.day = GALLERY[g].day;
+      it.i = out.length;
+      out.push(it);
+    }
+  }
+  return out;
+})();
+
+/* images/thumbs/x.jpg → images/full/x.jpg. The wall loads the small
+   one; opening a photograph fetches the large one over the top of it,
+   so the lightbox is never blank while it downloads. */
+function fullSrc(src) { return src.replace('/thumbs/', '/full/'); }
+
+/* A screen reader lands on eighty buttons in a row. "ફોટો ૩, ૨૭ ઓગસ્ટ"
+   at least says which of them this is and which day it belongs to. */
+function photoLabel(p) {
+  return 'ફોટો ' + gu(p.i + 1) + ', ' + p.day;
+}
+
+var lensEl = null, lensImg = null, lensOf = null,
+    lensPrev = null, lensNext = null,
+    lensAt = -1, lensReturn = null;
+
+function buildLens() {
+  if (lensEl) return;
+  lensEl = document.getElementById('lens');
+
+  function ctl(cls, d, label) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = cls;
+    b.setAttribute('aria-label', label);
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"/></svg>';
+    lensEl.appendChild(b);
+    return b;
+  }
+
+  lensOf = document.createElement('p');
+  lensOf.className = 'lens-of';
+  lensOf.setAttribute('aria-live', 'polite');
+
+  var fig = document.createElement('div');
+  fig.className = 'lens-fig';
+  lensImg = document.createElement('img');
+  lensImg.alt = '';
+  fig.appendChild(lensImg);
+
+  lensEl.appendChild(fig);
+  lensEl.appendChild(lensOf);
+
+  var x = ctl('lens-x', 'M6 6l12 12M18 6L6 18', 'બંધ કરો');
+  lensPrev = ctl('lens-p', 'M15 5l-7 7 7 7', 'પાછળનો ફોટો');
+  lensNext = ctl('lens-n', 'M9 5l7 7-7 7', 'આગળનો ફોટો');
+
+  x.addEventListener('click', closeLens);
+  lensPrev.addEventListener('click', function () { stepLens(-1); });
+  lensNext.addEventListener('click', function () { stepLens(1); });
+
+  /* Tapping the photograph itself closes it — the gesture everyone
+     already tries first. The controls stopPropagation by sitting
+     outside .lens-fig. */
+  fig.addEventListener('click', function (e) {
+    if (e.target === lensImg || e.target === fig) closeLens();
+  });
+
+  /* Swipe, because this will mostly be read on a phone. Only a
+     decisively horizontal drag counts, so a vertical flick meant to
+     scroll does not skip a photograph. */
+  var sx = 0, sy = 0, tracking = false;
+  lensEl.addEventListener('touchstart', function (e) {
+    if (e.touches.length !== 1) { tracking = false; return; }
+    tracking = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive: true });
+  lensEl.addEventListener('touchend', function (e) {
+    if (!tracking) return;
+    tracking = false;
+    var t = e.changedTouches[0];
+    var dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy) * 1.6) stepLens(dx < 0 ? 1 : -1);
+  }, { passive: true });
+}
+
+function showLens(i) {
+  if (i < 0 || i >= GPHOTOS.length) return;
+  lensAt = i;
+  var p = GPHOTOS[i];
+
+  /* The thumbnail is already decoded and in cache, so it paints this
+     frame; the full-size file replaces it when it arrives. You never
+     look at an empty rectangle waiting for a download. */
+  lensImg.classList.remove('shown');
+  lensImg.src = p.src;
+  lensImg.alt = photoLabel(p);
+  var big = new Image();
+  big.onload = function () {
+    if (lensAt !== i) return;            /* you moved on while it loaded */
+    lensImg.src = big.src;
+    lensImg.classList.add('shown');
+  };
+  big.onerror = function () {
+    if (lensAt === i) lensImg.classList.add('shown');
+  };
+  big.src = fullSrc(p.src);
+  /* a cached file can fire onload before this line, so show it anyway */
+  requestAnimationFrame(function () {
+    if (lensAt === i) lensImg.classList.add('shown');
+  });
+
+  lensOf.textContent = gu(i + 1) + ' / ' + gu(GPHOTOS.length) + ' · ' + p.day;
+  lensPrev.disabled = i === 0;
+  lensNext.disabled = i === GPHOTOS.length - 1;
+}
+
+function openLens(i, trigger) {
+  buildLens();
+  lensReturn = trigger || null;
+  lensEl.classList.add('on');
+  showLens(i);
+  requestAnimationFrame(function () { lensEl.classList.add('in'); });
+  document.addEventListener('keydown', lensKeys, true);
+  lensEl.querySelector('.lens-x').focus();
+}
+
+function closeLens() {
+  if (!lensEl || lensAt < 0) return;
+  lensAt = -1;
+  lensEl.classList.remove('in');
+  document.removeEventListener('keydown', lensKeys, true);
+  var back = lensReturn;
+  lensReturn = null;
+  setTimeout(function () {
+    if (lensAt < 0) { lensEl.classList.remove('on'); lensImg.src = ''; }
+  }, 300);
+  /* back to the frame you opened, not to the top of the wall */
+  if (back && back.isConnected) back.focus();
+}
+
+function stepLens(d) {
+  var n = lensAt + d;
+  if (n < 0 || n >= GPHOTOS.length) return;
+  showLens(n);
+}
+
+/* Capture phase, so Escape closes the photograph rather than the whole
+   panel underneath it — the panel's own handler is on document too. */
+function lensKeys(e) {
+  if (lensAt < 0) return;
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeLens(); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); stepLens(1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); stepLens(-1); }
+  else if (e.key === 'Tab') {
+    /* three controls, and Tab stays among them while a photo is open */
+    e.stopPropagation();
+  }
+}
+
+function viewGallery(root, flat) {
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+
+  if (!GPHOTOS.length) {
+    root.appendChild(el('p', 'g-note',
+      'ફોટા હજી ઉમેરાયા નથી. images/ ફોલ્ડરમાં ફોટા મૂકીને make-web-images.py ચલાવો.'));
+    return;
+  }
+
+  GALLERY.forEach(function (grp) {
+    var head = el('div', 'g-day');
+    head.appendChild(el('h3', null, grp.day));
+    head.appendChild(el('span'));
+    head.appendChild(el('small', null, gu(grp.items.length) + ' ફોટા'));
+    root.appendChild(head);
+
+    var wall = el('div', 'g-wall');
+    grp.items.forEach(function (p) {
+      var b = el('button', 'g-fr');
+      b.type = 'button';
+
+      var im = el('img');
+      im.src = p.src;
+      im.alt = photoLabel(p);
+      im.loading = 'lazy';
+      im.decoding = 'async';
+      /* the attributes, not CSS — this is what reserves the box */
+      im.width = p.w; im.height = p.h;
+
+      im.addEventListener('error', function () {
+        b.classList.add('gone');
+        b.disabled = true;
+        /* the frame keeps the shape the photograph would have had */
+        b.style.aspectRatio = p.w + ' / ' + p.h;
+        im.alt = '';
+      });
+
+      b.appendChild(im);
+      b.addEventListener('click', function () { openLens(p.i, b); });
+      wall.appendChild(b);
+    });
+    root.appendChild(wall);
+  });
+
+  root.appendChild(el('p', 'g-note',
+    'કોઈ પણ ફોટો પર ટચ કરો — મોટો દેખાશે. ડાબે-જમણે સરકાવીને આગળ-પાછળ જઈ શકાય.'));
+}
+VIEWS.gallery = viewGallery;
+
+
+
+function openSection(id, trigger) {
+  var s = sectionById(id);
+  if (!s || active === id) return;
+  active = id;
+  lastTrigger = trigger || null;
+
+  document.getElementById('panelTitle').textContent = s.gu;
+  document.getElementById('panelSub').textContent = s.sub;
+
+  var body = document.getElementById('panelBody');
+  body.textContent = '';
+  body.className = 'body-' + id;
+  if (VIEWS[id]) {
+    VIEWS[id](body);
+  } else {
+    var p = document.createElement('p');
+    p.textContent = 'આ વિભાગ તૈયાર થઈ રહ્યો છે.';
+    body.appendChild(p);
+  }
+
+  sheetEl.className = 'sheet frame-' + id;
+  panelEl.classList.add('open');
+  document.body.classList.add('reading');
+  setDock(false);
+  document.getElementById('back').classList.add('on');
+
+  framePanel();
+
+  sheetEl.scrollTop = 0;
+  sheetEl.focus({ preventScroll: true });
+}
+
+function closeSection() {
+  if (!active) return;
+  /* A photograph open over the gallery belongs to the gallery; leaving
+     it on screen after the panel has gone would strand it. */
+  if (lensAt >= 0) closeLens();
+  active = null;
+  panelEl.classList.remove('open');
+  document.body.classList.remove('reading');
+  setDock(true);
+  document.getElementById('back').classList.remove('on');
+  goto('home');
+  if (lastTrigger && lastTrigger.isConnected) lastTrigger.focus();
+  lastTrigger = null;
+}
+
+/* aria-modal is advisory; this is what actually keeps Tab in the dialog. */
+function trapTab(e) {
+  if (e.key !== 'Tab' || !active) return;
+  var f = panelEl.querySelectorAll('button:not([disabled]),a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+  var live = [];
+  for (var i = 0; i < f.length; i++) if (f[i].offsetParent !== null) live.push(f[i]);
+  var back = document.getElementById('back');
+  live.push(back);
+  if (!live.length) return;
+  var first = live[0], last = live[live.length - 1];
+  if (e.shiftKey && (document.activeElement === first || document.activeElement === sheetEl)) {
+    e.preventDefault(); last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault(); first.focus();
+  }
+}
+
+function bindNav() {
+  panelEl = document.getElementById('panel');
+  sheetEl = panelEl.querySelector('.sheet');
+  sheetEl.tabIndex = -1;
+
+  panelEl.addEventListener('click', function (e) {
+    if (e.target.getAttribute('data-close') === '1') closeSection();
+  });
+  document.getElementById('back').addEventListener('click', closeSection);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && active) { e.preventDefault(); closeSection(); }
+    else trapTab(e);
+  });
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   6. LOOP — with a framerate watchdog that can drop a tier live
+   ─────────────────────────────────────────────────────────────── */
+var fps = { frames: 0, since: 0, low: 0, probed: false };
+
+function measure(dt) {
+  fps.frames++; fps.since += dt;
+  if (fps.since < 1) return;
+  var v = fps.frames / fps.since;
+  fps.frames = 0; fps.since = 0;
+  window.__fps = Math.round(v);
+
+  /* The intro is the most expensive second of this page's life — shaders
+     compile, canvas textures are built, fonts land. Judging the device on
+     that would permanently downgrade a phone that runs the settled scene
+     at 60, and there is no path back up. So the watchdog stays quiet
+     until the intro is over, and then discards its first reading as
+     well: the second the intro ends is still paying for it. */
+  if (intro.running) { fps.low = 0; return; }
+  if (!fps.probed) { fps.probed = true; fps.low = 0; return; }
+
+  if (v < 40 && tier > TIER.LOW) {
+    fps.low++;
+    if (fps.low >= 2) { fps.low = 0; downgrade(); }
+  } else {
+    fps.low = 0;
+  }
+}
+
+function downgrade() {
+  applyTier(tier - 1);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, Q.maxDpr));
+  renderer.shadowMap.enabled = Q.shadows;
+  if (water) water.material.uniforms.uDetail.value = Q.waterDetail;
+  window.dispatchEvent(new CustomEvent('tierchange', { detail: tier }));
+}
+
+var paused = false;
+
+/* ── The aarti flare. Earned by reciting all ૧૦૮ names, and the only
+      thing in the scene louder than the intro.
+
+      It builds nothing new. One scalar rises and falls, and everything
+      that already breathes — the six wicks, the prabhavali, the glow
+      under the flower — simply breathes harder for five seconds. A
+      finale made of extra objects would cost a phone dearly for a
+      moment almost nobody reaches; a finale made of gain costs nothing
+      at all. ── */
+var aartiT = 0, aartiEnds = -1;
+var AARTI_LEN = 5.2;
+
+function fireAarti() { aartiEnds = t0 + AARTI_LEN; }
+
+function updateAarti() {
+  if (aartiEnds < 0) { aartiT = 0; return; }
+  var left = aartiEnds - t0;
+  if (left <= 0) { aartiT = 0; aartiEnds = -1; return; }
+  /* quick catch, long fall — a wick takes the flame at once and lets
+     it go slowly, which is the opposite of a symmetric envelope */
+  aartiT = Math.min(1, (AARTI_LEN - left) / 0.30) * Math.min(1, left / 1.8);
+  if (reduceMotion) aartiT = Math.min(aartiT, 0.35);
+}
+
+function frame() {
+  var dt = Math.min(clock.getDelta(), 0.05);   /* clamp after a tab switch */
+  if (paused) return;
+  t0 += dt;
+  measure(dt);
+
+  if (water) water.material.uniforms.uTime.value = t0;
+  if (intro.running) updateIntro(dt);
+  updateAarti();
+  updateLotus();
+  updateBappa(dt);
+  updateAura();
+  updateDiyas();
+  updateDock();
+  updateCamera(dt);
+  renderer.render(scene, camera);
+}
+
+function onResize() {
+  var w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  /* A portrait viewport has barely ±13° of horizontal view, and the open
+     flower is 4 units across — so portrait both widens the lens and
+     stands further back, or the outer petals fall off both sides. */
+  var portrait = h > w;
+  STATION.home.fov = portrait ? 56 : 42;
+  /* Landscape stands much closer than portrait. At r 7.8 the flower was
+     about 200px of an 844px frame — a small pink cluster adrift in empty
+     night, with the dock sitting on top of it. Now the buttons are out on
+     the flanks, the camera can come in and let the lotus be the frame. */
+  STATION.home.r   = portrait ? 8.6 : 5.4;
+  STATION.home.ty  = portrait ? 1.44 : 1.48;
+  /* High enough to look a little way into the bowl — from water level the
+     outer plate is edge-on and the whole flower collapses into a thin band.
+     Not so high that the rings splay onto one plane and it becomes a flower
+     seen from above rather than a throne. That window turned out to be
+     narrow: 0.22 is a band, 0.38 is a rosette, and this sits between. */
+  STATION.home.el  = portrait ? 0.30 : 0.32;
+  STATION.wide.fov = portrait ? 60 : 46;
+  STATION.wide.r   = portrait ? 10.4 : 7.0;
+  STATION.wide.ty  = portrait ? 1.42 : 1.44;
+  /* The panel station has to travel with home, or opening a section in
+     landscape throws the camera back out to where it just came from. */
+  STATION.panel.r  = portrait ? 8.6 : 6.2;
+  STATION.panel.tx = portrait ? 2.1 : 1.9;
+  STATION.panel.ty = portrait ? 1.62 : 1.52;
+  camera.updateProjectionMatrix();
+  /* re-issue the station, or the rig keeps easing toward the old one */
+  if (!active && !intro.running) goto('home');
+
+  /* an open panel sits on a different side in each orientation, so the
+     framing follows a rotation. Only the camera — rebuilding the panel
+     here would wipe form state every time a soft keyboard opens. */
+  if (active) framePanel();
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   7. BOOT
+   ─────────────────────────────────────────────────────────────── */
+function boot() {
+  if (!hasWebGL()) return flatFallback('webgl');
+
+  applyTier(detectTier());
+
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(col(C.nightLo), 0.028);
+  camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 260);
+  clock = new THREE.Clock();
+
+  try {
+    buildRenderer();
+    buildSky();
+    buildWater();
+    buildLotus();
+    buildBappa();
+    buildAura();
+    buildDiyas();
+  } catch (err) {
+    console.error('scene build failed', err);
+    return flatFallback('build');
+  }
+  buildDock();
+
+  /* Ambient carries the night; the diyas carry the warmth. The key rakes
+     the flower from high on the left rather than sitting over the camera's
+     shoulder — a frontal key lands flat on petals that are themselves
+     nearly flat, and the whole flower turns into one pale wash. Off to the
+     side it gives every petal a lit face and a shaded one, which is the
+     only reason the layering reads at all. */
+  scene.add(new THREE.HemisphereLight(col('#6B4A94'), col(C.patola), 0.60));
+  var key = new THREE.PointLight(col('#FFE0B0'), 0.72, 16, 2);
+  key.position.set(2.9, 4.3, 1.2);
+  /* and a cool counter-light from behind right, at a third the strength,
+     so the shaded halves are separated from each other instead of all
+     falling into the same dark. Directional rather than a lamp: it reads
+     as bounce off the night, and it costs the fragment shader less than a
+     fifth point light would once the diyas have taken their three. */
+  var rim = new THREE.DirectionalLight(col('#9C7CD8'), 0.34);
+  rim.position.set(-3.4, 3.0, -2.6);
+  scene.add(rim);
+  if (Q.shadows) {
+    key.castShadow = true;
+    key.shadow.mapSize.set(512, 512);
+    key.shadow.bias = -0.002;
+  }
+  scene.add(key);
+
+  onResize();
+  window.addEventListener('resize', onResize, { passive: true });
+  window.addEventListener('orientationchange', function () { setTimeout(onResize, 120); });
+
+  bindNav();
+
+  canvas.addEventListener('pointerdown', onDown);
+  window.addEventListener('pointermove', onMove, { passive: true });
+  window.addEventListener('pointerup', onUp);
+  window.addEventListener('pointercancel', onUp);
+  window.addEventListener('mousemove', onHover, { passive: true });
+
+  document.addEventListener('visibilitychange', function () {
+    paused = document.hidden;
+    if (!paused) clock.getDelta();       /* swallow the gap */
+  });
+
+  goto('home', true);
+  rig.r = 14; rig.el = 0.66; rig.fov = 60;   /* start pulled back and high… */
+  goto('home');                              /* …then settle in */
+
+  renderer.setAnimationLoop(frame);
+
+  document.getElementById('veil').classList.add('gone');
+
+  /* exposed for verification: FPS, tier, and timeline scrubbing */
+  window.__scene = {
+    get tier() { return tier; },
+    get fps() { return window.__fps; },
+    get intro() { return intro.t; },
+    goto: goto,
+    rig: rig,
+    open: openSection,
+    close: closeSection,
+    get active() { return active; },
+    get navFade() { return dockLit ? 1 : 0; },
+    get aarti() { return aartiT; },
+    fireAarti: fireAarti,
+    /* the quiz's live model, so a full round can be played and scored
+       from a test without the answers being reachable from the page */
+    get quiz() { return quiz; },
+    /* project a world point to screen pixels, so framing can be
+       measured rather than eyeballed off a screenshot */
+    at: function (x, y, z) {
+      var v = new THREE.Vector3(x, y, z).project(camera);
+      return {
+        x: Math.round((v.x * 0.5 + 0.5) * window.innerWidth),
+        y: Math.round((-v.y * 0.5 + 0.5) * window.innerHeight)
+      };
+    },
+    /* scrub the reveal so a mid-bloom frame can be inspected */
+    seek: function (v) {
+      intro.t = v; intro.running = true; intro.named = v >= 4.15;
+      document.getElementById('nameplate').classList.toggle('lit', v >= 4.15);
+      return v;
+    },
+    time: function (v) { if (v !== undefined) t0 = v; return t0; }
+  };
+}
+
+function flatFallback(why) {
+  buildFlat();
+  document.getElementById('veil').classList.add('gone');
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('noweb').classList.add('on');
+  document.documentElement.style.overflow = 'auto';
+  document.body.style.overflow = 'auto';
+  console.warn('falling back to flat layout:', why);
+}
+
+/* The no-WebGL page is not an apology screen — it carries all four
+   destinations as plain HTML. Section views that build DOM (rather than
+   geometry) are reused here verbatim. */
+function buildFlat() {
+  var host = document.getElementById('nowebBody');
+  if (!host || host.childElementCount) return;
+  SECTIONS.forEach(function (s) {
+    var sec = document.createElement('section');
+    var h = document.createElement('h2');
+    h.textContent = s.gu;
+    var p = document.createElement('p');
+    p.textContent = s.sub;
+    var body = document.createElement('div');
+    body.className = 'body-' + s.id;
+    if (VIEWS[s.id]) {
+      try { VIEWS[s.id](body, true); } catch (err) { console.warn('flat view failed', s.id, err); }
+    }
+    sec.appendChild(h); sec.appendChild(p); sec.appendChild(body);
+    host.appendChild(sec);
+  });
+}
+
+if (window.THREE) {
+  boot();
+} else {
+  /* three.min.js did not load — offline, or blocked. Say so, don't hang. */
+  flatFallback('three-missing');
+}
+
+})();
+</script>
+</body>
+</html>
